@@ -1,0 +1,69 @@
+<!DOCTYPE objects.html>
+<html>
+<head>
+    <title>Patients and Devices</title>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel='stylesheet' href='/assets/css/main.css' />
+</head>
+
+<body class="w3-light-grey">
+<h1>This webpage will guide you through the functionalities of Patient and MedDevice</h1>
+
+<h2>Creation of Patient</h2>
+
+<form id="PtCreateForm" method="post" action="/objects/CreatePatient">
+
+    PatientID:
+    <input type="textbox" name="PatientID" id="PtID">
+    <br>
+    PatientName:
+    <input type="textbox" name="PatientName" id="PtName">
+    <br>
+    <button id="PatientCreate">Click to Create Patient</button>
+
+
+</form>
+<!-- We should not put the bottom in to the form, otherwise javascript will think we are sending message to a php file! -->
+<table id="PatientTable">
+    <tr>
+        <th>PatientID</th>
+        <th>PatientName</th>
+        <th>PatientEmKey</th>
+        <th>PatientPubKey</th>
+    </tr>
+
+    <%for(var p of patientList){%>
+        <tr>
+            <td><%=p.patientID%></td>
+            <td><%=p.patientName%></td>
+            <td><%=p.emKey%></td>
+            <td><%=p.publicKey%></td>
+        </tr>
+    <%}%>
+
+
+</table>
+
+<form id="EmEncrypt" action="/objects/EmEncrypt">
+    Please input the emergency message:
+    <input type="textbox" name="message" id="PlainMsg"><br>
+    Please indicate whose emKey you would like to use(specify patient id):
+    <input type="textbox" name="patientID" id="EmEncID">
+    <button id="Encrypt">Encrypt</button> CipherText:<text id="CipherText"><%=cipherText%></text>
+</form>
+<br>
+
+<form id="EmDecrypt" action="/objects/EmDecrypt">
+    <br>
+    Please input the ciper text:
+    <input type="textbox" name="CipherText" id="CMsg"><br>
+    Please indicate whose emKey you would like to use(specify patient id):
+    <input type="textbox" name="patientID" id="EmDecID">
+    <button id="Decrypt">Decrypt</button> Decrypted Message:<text id="DecMsg"><%=plainText%></text>
+</form>
+
+
+
+</body>
+</html>
