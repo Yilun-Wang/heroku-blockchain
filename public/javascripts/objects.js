@@ -1,3 +1,64 @@
+/*The contractDeployer deploys MedRec contracts on sender's demand, 
+to a specific deployment url, using a specific address.*/
+
+/*User needs to specify which contract to deploy, and pass in the 
+parameters used in the constructor of contracts.*/
+
+function contractDeployer(_url_toDeploy,_senderAddr){
+    
+    this.url_toDeploy=_url_toDeploy;
+    this.senderAddr=_senderAddr;
+    
+    if(this.url_toDeploy==undefined)
+        url_toDeploy="http:\\localhost:8545";
+
+   
+   this.RC_deploy=function(){
+       console.log("Deploying an RC");
+       return this.deploy_template("RC");
+}
+    this.PPR_deploy=function(patientID,providerID){
+        console.log("Deploying an PPR");
+    return this.deploy_template("PPR",patientID.toString(),providerID.toString());
+}
+    this.SC_deploy=function(RegistrarID,RegistrarEthAddr){
+        console.log("Deploying an SC");
+    return this.deploy_template("SC",RegistrarID.toString(),RegistrarEthAddr);
+}
+
+    this.deploy_template=function(sc_type,param1,param2){
+        
+        var Web3=require('web3');
+        var web3=new Web3(new Web3.providers.HttpProvider(this.url_toDeploy));
+  
+        var format_src;
+        switch(sc_type){
+            case "RC": format_src='../../build/contracts/RC.json'; break;
+            case "PPR": format_src='../../build/contracts/PPR.json'; break;
+            case "SC": format_src='../../build/contracts/SC.json'; break;
+            default: console.log('Unknown contract type.'); return undefined;
+        }
+
+        var contract_format=require(format_src);
+
+        var contract_generator=web3.eth.contract(contract_format.abi);
+
+        // var gasEstimate= web3.eth.estimateGas({data:contract_format.bytecode});
+        var gasEstimate=1000000;
+        console.log(gasEstimate);
+        
+        
+        //Deploy a new contract on rpc.
+        var contract_instance=contract_generator.new(param1,param2,{
+            data:contract_format.bytecode,
+            from:this.senderAddr,
+            gas:gasEstimate
+        });
+
+        
+        return contract_instance.transactionHash;
+    }
+}
 
 function medicalDevice(id, name) {
     this.deviceID = id;
@@ -99,3 +160,4 @@ function patient(id, name) {
 
 exports.patient=patient;
 exports.medicalDevice=medicalDevice;
+exports.contractDeployer=contractDeployer;
