@@ -60,6 +60,42 @@ function contractDeployer(_url_toDeploy,_senderAddr){
     }
 }
 
+function DbGatekeeper(){
+    
+    this.PPR_List=[];
+    
+    this.getPatientProfile=function(patientID){
+        //go to RC and retrieve the profile.
+        return {ethAccount:"a eth address",SC:"a sc contract object"};
+    }
+    
+    this.verifyIdentity=function(signed_query,SC){
+        //call SC to verify the signature of the query.
+        return true;
+    }
+
+    this.verifyPermission=function(SC){
+        
+    }
+
+    this.handleQuery=function(patientID,query,signed_query){
+        var profile=this.getPatientProfile(patientID);
+        var verify=this.verifyIdentity(signed_query,profile.ethAccount);
+        
+        if(verify==false)
+            {
+                console.log("Patient does not match signature.");
+                return null;
+            }
+        
+    }
+    
+
+        
+
+        
+}
+
 function medicalDevice(id, name) {
     this.deviceID = id;
     this.deviceName = name;
@@ -161,3 +197,4 @@ function patient(id, name) {
 exports.patient=patient;
 exports.medicalDevice=medicalDevice;
 exports.contractDeployer=contractDeployer;
+exports.DbGatekeeper=DbGatekeeper;
