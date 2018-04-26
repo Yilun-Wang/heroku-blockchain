@@ -5,7 +5,9 @@ to a specific deployment url, using a specific address.*/
 parameters used in the constructor of contracts.*/
 
 function contractDeployer(_url_toDeploy,_senderAddr){
-    
+    var Web3=require('web3');
+    var web3=new Web3(new Web3.providers.HttpProvider(this.url_toDeploy));
+
     this.url_toDeploy=_url_toDeploy;
     this.senderAddr=_senderAddr;
     
@@ -26,11 +28,8 @@ function contractDeployer(_url_toDeploy,_senderAddr){
     return this.deploy_template("SC",RegistrarID.toString(),RegistrarEthAddr);
 }
 
-    this.deploy_template=function(sc_type,param1,param2){
-        
-        var Web3=require('web3');
-        var web3=new Web3(new Web3.providers.HttpProvider(this.url_toDeploy));
-  
+    this.generateTemplate=function(sc_type){
+      
         var format_src;
         switch(sc_type){
             case "RC": format_src='../../build/contracts/RC.json'; break;
@@ -43,20 +42,33 @@ function contractDeployer(_url_toDeploy,_senderAddr){
 
         var contract_generator=web3.eth.contract(contract_format.abi);
 
+        return {template:contract_generator,format:contract_format};
+    }
+
+    this.deploy_template=function(sc_type,param1,param2){
+        
+        var contract_generator=this.generateTemplate(sc_type);
         // var gasEstimate= web3.eth.estimateGas({data:contract_format.bytecode});
         var gasEstimate=1000000;
-        console.log(gasEstimate);
+        
         
         
         //Deploy a new contract on rpc.
-        var contract_instance=contract_generator.new(param1,param2,{
-            data:contract_format.bytecode,
+        var contract_instance=contract_generator.template.new(param1,param2,{
+            data:contract_generator.format.bytecode,
             from:this.senderAddr,
             gas:gasEstimate
         });
+        //After the call above, the contract address is still undefined, as it may not have been mined yet.
+        ///
 
-        
-        return contract_instance.transactionHash;
+
+        //We refresh the contract_instance to be the actual contract on chain.
+        var address=web3.eth.getTransactionReceipt(contract_instance.transactionHash).contractAddress;
+        contract_instance=contract_generator.template.at(address);
+        ///
+
+        return contract_instance;
     }
 }
 
@@ -101,9 +113,16 @@ function medicalDevice(id, name) {
     this.deviceName = name;
     this.dataLog = []; // offchain database
     this.submitCount = 0;
-    this.generateData = function(newData) {
-        dataLog.push({time:new Date(), content: newData});
-        return;
+    this.generateData = function(newData,publicKey=null) {
+        
+        var data={time:new Date(), content: newData};
+        
+        if(publicKey==null)
+            dataLog.push(data);
+        else
+            dataLog.push(this.encrypt(publicKey,data));
+        
+            return;
     };
     this.submitDataLog = function() {
         for (var i = this.submitCount; i < this.dataLog.length; i++) {
@@ -119,7 +138,7 @@ function medicalDevice(id, name) {
         } else {
             result = this.dataLog.slice(0, this.submitCount);
         }
-        return this.encrypt(publicKey,result);
+        return result;
     };
     this.encrypt = function(publicKey, data) {
         var cryptico=require('cryptico');

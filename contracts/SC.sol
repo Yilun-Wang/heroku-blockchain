@@ -58,5 +58,15 @@ can accept, reject or delete relationships*/
         
         return 0;    
     }
+function verify(bytes32 h, uint8 _v, bytes32 _r, bytes32 _s)view public returns (address,address,bool){
+    
+    bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+    bytes32 prefixedHash = keccak256(prefix,h);
+
+
+    address signer = ecrecover(prefixedHash, _v, _r, _s);
+    // return prefixedHash;
+    return (signer,RegistrarEthAddr,signer==RegistrarEthAddr);
+  }
 }
 
