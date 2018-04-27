@@ -6,13 +6,15 @@ parameters used in the constructor of contracts.*/
 
 function contractDeployer(_url_toDeploy,_senderAddr){
     var Web3=require('web3');
-    var web3=new Web3(new Web3.providers.HttpProvider(this.url_toDeploy));
+    var web3=new Web3(new Web3.providers.HttpProvider(_url_toDeploy));
 
+    
+    console.log(_url_toDeploy);
     this.url_toDeploy=_url_toDeploy;
     this.senderAddr=_senderAddr;
     
     if(this.url_toDeploy==undefined)
-        url_toDeploy="http:\\localhost:8545";
+        url_toDeploy="http://localhost:8545";
 
    
    this.RC_deploy=function(){
@@ -53,6 +55,7 @@ function contractDeployer(_url_toDeploy,_senderAddr){
         
         
         
+        console.log("Deploying contract.");
         //Deploy a new contract on rpc.
         var contract_instance=contract_generator.template.new(param1,param2,{
             data:contract_generator.format.bytecode,
@@ -62,10 +65,13 @@ function contractDeployer(_url_toDeploy,_senderAddr){
         //After the call above, the contract address is still undefined, as it may not have been mined yet.
         ///
 
+        console.log("Contract Deployed.");
 
         //We refresh the contract_instance to be the actual contract on chain.
         var address=web3.eth.getTransactionReceipt(contract_instance.transactionHash).contractAddress;
+        console.log(address);
         contract_instance=contract_generator.template.at(address);
+        console.log(contract_instance);
         ///
 
         return contract_instance;
