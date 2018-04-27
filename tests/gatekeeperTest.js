@@ -41,6 +41,7 @@ web3.eth.personal.newAccount(password).then(
             function(result){
 
                 console.log("account unlocked.result:"+a);
+                
                  next(a);
             });
         }
