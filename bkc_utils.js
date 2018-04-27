@@ -36,19 +36,19 @@ module.exports= {
     signPromise: function(dataToSign,address,password){
         return web3.eth.sign(dataToSign,address);
     },
-    sign: function(message,account){
-        var h=web3.utils.sha3(message);
-        var signature=web3.eth.sign(account,h);
-        return signature;
-        },
+    // sign: function(message,account){
+    //     var h=web3.utils.sha3(message);
+    //     var signature=web3.eth.sign(account,h);
+    //     return signature;
+    //     },
     
-    verify: function(signature,message,contract){
-        var message="I am the flash";
-        var h=web3.sha3(message);    
-        var RSV=sigToRSV(signature);
+    // verify: function(signature,message,contract){
+    //     var message="I am the flash";
+    //     var h=web3.sha3(message);    
+    //     var RSV=sigToRSV(signature);
         
-        return contract.verify(h,RSV.v,RSV.r,RSV.s);
-    },
+    //     return contract.verify(h,RSV.v,RSV.r,RSV.s);
+    // },
     contractDeployer: function(_url_toDeploy,_senderAddr){
         var Web3=require('web3');
         var web3=new Web3(new Web3.providers.HttpProvider(_url_toDeploy));
@@ -79,9 +79,9 @@ module.exports= {
           
             var format_src;
             switch(sc_type){
-                case "RC": format_src='../../build/contracts/RC.json'; break;
-                case "PPR": format_src='../../build/contracts/PPR.json'; break;
-                case "SC": format_src='../../build/contracts/SC.json'; break;
+                case "RC": format_src='./build/contracts/RC.json'; break;
+                case "PPR": format_src='./build/contracts/PPR.json'; break;
+                case "SC": format_src='./build/contracts/SC.json'; break;
                 default: console.log('Unknown contract type.'); return undefined;
             }
     

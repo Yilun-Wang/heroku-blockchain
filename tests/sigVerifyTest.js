@@ -6,39 +6,37 @@ async function main(){
 
 var password="pengshu";
 
-var account=await web3.eth.personal.newAccount(password);
+var oneBranchAccount=await web3.eth.personal.newAccount(password);
+console.log("one branch",oneBranchAccount);
 
-console.log(account);
+
 let unlock;
+
 try{
-unlock=await web3.eth.personal.unlockAccount(account,password);}
+    unlock=await web3.eth.personal.unlockAccount(oneBranchAccount,password);}
 catch(e){}
-console.log(unlock);
+    console.log("one branch unlock",unlock);
+    
 
 var message="I am the flash";
 let signature;
 try{
-    signature=await web3.eth.sign(message,account);
+    signature=await web3.eth.sign(message,oneBranchAccount);
 }catch(e){}
-console.log(signature);
-// var 
+console.log("signature one branch:",signature);
+
+let verfication;
+try {
+    verification= await web3.eth.personal.ecRecover(message,signature);
+}catch(e){console.log(e);}
+console.log(verfication);
 }
-main();
-// console.log(newAccount(password));
-// web3.eth.personal.newAccount(password).then(
-//     function(account){
-//         console.log("personal account",account);
-//         var a=account;
-//         web3.eth.personal.unlockAccount(account,password).then(
-//             function(result){
-//                 var message='I am the flash';
-//                 console.log("account unlocked.result:"+a);
-//                 web3.eth.sign(message,a).then(
-//                     function(result){
-//                         console.log(result);
-//                     }
-//                 );
-//                 //  next(a);
-//             });
-//         }
-// );
+// main();
+
+
+var ethAccount=web3.eth.accounts.create("random entropy");
+console.log(ethAccount);
+var message="I am the flash.";
+var signature=ethAccount.sign(message);
+
+console.log(web3.eth.accounts.recover(signature));
