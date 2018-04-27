@@ -29,15 +29,15 @@ var web3=new Web3();
 var hosturl="http://localhost:8545";
 web3.setProvider(new Web3.providers.HttpProvider(hosturl));
 
-module.exports={
+module.exports= {
 
-    sign=function(message,account){
-        var h=web3.sha3(message);
+    sign: function(message,account){
+        var h=web3.utils.sha3(message);
         var signature=web3.eth.sign(account,h);
         return signature;
         },
     
-    verify=function(signature,message,contract){
+    verify: function(signature,message,contract){
         var message="I am the flash";
         var h=web3.sha3(message);    
         var RSV=sigToRSV(signature);

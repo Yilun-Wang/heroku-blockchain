@@ -7,12 +7,12 @@ parameters used in the constructor of contracts.*/
 function contractDeployer(_url_toDeploy,_senderAddr){
     var Web3=require('web3');
     var web3=new Web3(new Web3.providers.HttpProvider(_url_toDeploy));
+    web3.eth.defaultAccount=_senderAddr;
 
-    
-    console.log(_url_toDeploy);
     this.url_toDeploy=_url_toDeploy;
+    console.log("_senderAddr",_senderAddr);
     this.senderAddr=_senderAddr;
-    
+
     if(this.url_toDeploy==undefined)
         url_toDeploy="http://localhost:8545";
 
@@ -41,8 +41,10 @@ function contractDeployer(_url_toDeploy,_senderAddr){
         }
 
         var contract_format=require(format_src);
-
-        var contract_generator=web3.eth.contract(contract_format.abi);
+        // var gasEstimate= web3.eth.estimateGas({data:contract_format.bytecode});
+        
+        
+        var contract_generator=new web3.eth.Contract(contract_format.abi);
 
         return {template:contract_generator,format:contract_format};
     }
@@ -50,28 +52,36 @@ function contractDeployer(_url_toDeploy,_senderAddr){
     this.deploy_template=function(sc_type,param1,param2){
         
         var contract_generator=this.generateTemplate(sc_type);
-        // var gasEstimate= web3.eth.estimateGas({data:contract_format.bytecode});
-        var gasEstimate=1000000;
-        
-        
+     
         
         console.log("Deploying contract.");
+        var gasEstimate=1000000;
         //Deploy a new contract on rpc.
-        var contract_instance=contract_generator.template.new(param1,param2,{
+        console.log(this.senderAddr);
+
+        var contract_instance=contract_generator.template.deploy(
+        {
             data:contract_generator.format.bytecode,
-            from:this.senderAddr,
-            gas:gasEstimate
+            arguments:[param1,param2]
+        }).send({gas:gasEstimate,gasPrice:'0',from:this.senderAddr},function(err,transactionHash){
+            if(!err)
+                {
+                    console.log("Contract Deployed.");
+                    
+                    console.log("TxHash:",transactionHash);
+                }
+            else    
+                console.log(err);
         });
         //After the call above, the contract address is still undefined, as it may not have been mined yet.
         ///
 
-        console.log("Contract Deployed.");
 
         //We refresh the contract_instance to be the actual contract on chain.
-        var address=web3.eth.getTransactionReceipt(contract_instance.transactionHash).contractAddress;
-        console.log(address);
-        contract_instance=contract_generator.template.at(address);
-        console.log(contract_instance);
+        // var receipt=web3.eth.getTransactionReceipt(contract_instance.transactionHash).contractAddress;
+        // console.log(receipt);
+        // contract_instance=contract_generator.template.at(address);
+        // console.log(contract_instance);
         ///
 
         return contract_instance;
@@ -93,7 +103,7 @@ function DbGatekeeper(){
     }
 
     this.verifyPermission=function(SC){
-        
+        return true;
     }
 
     this.handleQuery=function(patientID,query,signed_query){
@@ -105,6 +115,13 @@ function DbGatekeeper(){
                 console.log("Patient does not match signature.");
                 return null;
             }
+        verify=this.verifyPermission(patientID,query,SC);
+
+        if(verify==false)
+        {
+            console.log("Patient does not have the permission with this query.");
+            return null;
+        }
         
     }
     
