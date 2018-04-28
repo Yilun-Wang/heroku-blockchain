@@ -1,6 +1,6 @@
 var Web3=require('web3');
 var web3=new Web3();
-// var gateKeeper=require('../public/javascripts/objects').DbGatekeeper();
+
 var hosturl="http://localhost:7545";
 web3.setProvider(new Web3.providers.HttpProvider(hosturl));
 
@@ -33,3 +33,16 @@ async function personalDeploy(){
 }
 // personalDeploy();
 
+var gateKeeper=require('../public/javascripts/objects').DbGatekeeper;
+var keeper=new gateKeeper(hosturl,"xxx");
+
+function testSignature(){
+    var query="10";
+    var dummyAccount=web3.eth.accounts.create("dummy entropy");
+    var message="Why so serious.";
+    var signature=dummyAccount.sign(message);
+
+    console.log(keeper.verifyIdentity(signature,dummyAccount.address));
+
+    console.log(keeper.verifyIdentity(signature,"randomness"));
+}

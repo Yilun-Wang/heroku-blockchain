@@ -55,7 +55,7 @@ module.exports= {
         web3.eth.defaultAccount=_senderAddr;
     
         this.url_toDeploy=_url_toDeploy;
-        console.log("_senderAddr",_senderAddr);
+        // console.log("_senderAddr",_senderAddr);
         this.senderAddr=_senderAddr;
     
         if(this.url_toDeploy==undefined)
@@ -99,7 +99,7 @@ module.exports= {
             var contract_generator=this.generateTemplate(sc_type);
          
             
-            console.log("Deploying contract.");
+            // console.log("Deploying contract.");
             var gasEstimate=1000000;
             //Deploy a new contract on rpc.
             console.log(this.senderAddr);

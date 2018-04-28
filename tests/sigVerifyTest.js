@@ -2,6 +2,8 @@ var hosturl="http://localhost:7545";
 var utils=require('../bkc_utils');
 var web3=utils.quickWeb3(hosturl);
 
+
+//Relative synchronize signature using personal sign.
 async function main(){
 
 var password="pengshu";
@@ -33,7 +35,7 @@ console.log(verfication);
 }
 // main();
 
-
+//Off chain signature and recover using web3 1.0
 var ethAccount=web3.eth.accounts.create("random entropy");
 console.log(ethAccount);
 var message="I am the flash.";

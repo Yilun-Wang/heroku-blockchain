@@ -3,28 +3,39 @@ to a specific deployment url, using a specific address.*/
 
 /*User needs to specify which contract to deploy, and pass in the 
 parameters used in the constructor of contracts.*/
+DbGatekeeper=function(hosturl,RCAddress){
+    var web3=require('../../bkc_utils').quickWeb3(hosturl);
+    this.RC;    
+    // var dummyAccount=web3.eth.accounts.create("dummy entropy");
 
-function DbGatekeeper(){
-    
     this.PPR_List=[];
+    // this.ethAddressList=[{patientID:"dummy",ethAccount:dummyAccount.address}];
     
     this.getPatientProfile=function(patientID){
         //go to RC and retrieve the profile.
-        return {ethAccount:"a eth address",SC:"a sc contract object"};
+        return {ethAddress:"...",SC:"a sc contract object"};
     }
     
-    this.verifyIdentity=function(signed_query,SC){
-        //call SC to verify the signature of the query.
-        return true;
+    this.verifyIdentity=function(signed_query_object,ethAddress){
+        
+        var recover=web3.eth.accounts.recover(signed_query_object);
+
+        if(recover==ethAddress)
+            return true;
+        else{
+            
+            console.log("!!!!Signature verfication fails!!!! recover address:",recover,"actual address:",ethAddress);
+            return false;
+        }
     }
 
     this.verifyPermission=function(SC){
         return true;
     }
 
-    this.handleQuery=function(patientID,query,signed_query){
+    this.handleQuery=function(patientID,query,signed_query_object){
         var profile=this.getPatientProfile(patientID);
-        var verify=this.verifyIdentity(signed_query,profile.ethAccount);
+        var verify=this.verifyIdentity(signed_query_object,profile.ethAccount);
         
         if(verify==false)
             {
@@ -39,11 +50,7 @@ function DbGatekeeper(){
             return null;
         }
         
-    }
-    
-
-        
-
+    }  
         
 }
 
@@ -154,5 +161,5 @@ function patient(id, name) {
 
 exports.patient=patient;
 exports.medicalDevice=medicalDevice;
-exports.contractDeployer=contractDeployer;
+
 exports.DbGatekeeper=DbGatekeeper;
