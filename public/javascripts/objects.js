@@ -3,9 +3,9 @@ to a specific deployment url, using a specific address.*/
 
 /*User needs to specify which contract to deploy, and pass in the 
 parameters used in the constructor of contracts.*/
-DbGatekeeper=function(hosturl,RCAddress){
+DbGatekeeper=function(hosturl,RC){
     var web3=require('../../bkc_utils').quickWeb3(hosturl);
-    this.RC;    
+    this.RC=RC;    
     // var dummyAccount=web3.eth.accounts.create("dummy entropy");
 
     this.PPR_List=[];

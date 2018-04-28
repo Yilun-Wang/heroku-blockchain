@@ -40,7 +40,7 @@ can accept, reject or delete relationships*/
     
     function addPPR(string _ProviderID,address _PPR)public returns(int){
         
-        if(PPRStatus[_PPR]==0)
+        if(PPRStatus[_PPR]==1)
             return -1;//The PPR already exists.
         
         //If not, add the new PPR into mapping.

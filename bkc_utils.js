@@ -52,6 +52,7 @@ module.exports= {
     contractDeployer: function(_url_toDeploy,_senderAddr){
         var Web3=require('web3');
         var web3=new Web3(new Web3.providers.HttpProvider(_url_toDeploy));
+        
         web3.eth.defaultAccount=_senderAddr;
     
         this.url_toDeploy=_url_toDeploy;
@@ -62,17 +63,28 @@ module.exports= {
             url_toDeploy="http://localhost:8545";
     
        
-       this.RC_deploy=function(){
+       this.RC_deploy=async function(){
            console.log("Deploying an RC");
-           return this.deploy_template("RC");
+           let result;
+            try{
+            result=await this.deploy_template("RC");}catch(e){console.log(e);}
+            return result;
+           
     }
-        this.PPR_deploy=function(patientID,providerID){
+        this.PPR_deploy=async function(patientID,providerID){
             console.log("Deploying an PPR");
-        return this.deploy_template("PPR",patientID.toString(),providerID.toString());
+            let result;
+            try{
+            result=await this.deploy_template("PPR",patientID.toString(),providerID.toString());}catch(e){console.log(e);}
+            return result;
+        
     }
-        this.SC_deploy=function(RegistrarID,RegistrarEthAddr){
+        this.SC_deploy=async function(RegistrarID,RegistrarEthAddr){
             console.log("Deploying an SC");
-        return this.deploy_template("SC",RegistrarID.toString(),RegistrarEthAddr);
+            let result;
+            try{
+            result=await this.deploy_template("SC",RegistrarID.toString(),RegistrarEthAddr);}catch(e){console.log(e);}
+            return result;
     }
     
         this.generateTemplate=function(sc_type){
@@ -94,31 +106,26 @@ module.exports= {
             return {template:contract_generator,format:contract_format};
         }
     
-        this.deploy_template=function(sc_type,param1,param2){
+        this.deploy_template=async function(sc_type,param1,param2){
             
             var contract_generator=this.generateTemplate(sc_type);
-         
+          
             
             // console.log("Deploying contract.");
+
             var gasEstimate=1000000;
             //Deploy a new contract on rpc.
-            console.log(this.senderAddr);
+            // console.log(this.senderAddr);
     
-            var contract_instance=contract_generator.template.deploy(
+            let contract_instance;
+            try{
+                console.log("before deploy");
+            contract_instance=await contract_generator.template.deploy(
             {
                 data:contract_generator.format.bytecode,
                 arguments:[param1,param2]
-            }).send({gas:gasEstimate,gasPrice:'0',from:this.senderAddr},function(err,transactionHash){
-                if(!err)
-                    {
-                        console.log("Contract Deployed.");
-                        
-                        console.log("TxHash:",transactionHash);
-                    }
-                else    
-                    console.log(err);
-            });
-           
+            }).send({gas:gasEstimate,gasPrice:'0',from:this.senderAddr});}catch(e){console.log("err",e);}
+        //    console.log(contract_instance);
             return contract_instance;
         }
         
@@ -129,6 +136,7 @@ module.exports= {
         web3.setProvider(new Web3.providers.HttpProvider(hosturl));
         return web3;
     }
+      
     
     
 }    

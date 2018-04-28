@@ -102,12 +102,12 @@ function deployRC(hosturl,app){
   var web3=utils.quickWeb3(hosturl);
   web3.eth.personal.newAccount("genesys").then(async function(genesysAccount){
 
-    let unlock;
-    try{
-      unlock=await web3.eth.personal.unlockAccount(genesysAccount,"genesys");}catch(e){console.log(e);}
+  let unlock;
+  try{
+    unlock=await web3.eth.personal.unlockAccount(genesysAccount,"genesys");}catch(e){console.log(e);}
     
-      var deployer=new utils.contractDeployer(hosturl,genesysAccount);
-      app.locals.RC=deployer.RC_deploy();
+    var deployer=new utils.contractDeployer(hosturl,genesysAccount);
+    app.locals.RC=deployer.RC_deploy();
       
       // console.log(app.locals.RC);
 });
