@@ -2,10 +2,10 @@
 function medicalDevice(id, name) {
     this.deviceID = id;
     this.deviceName = name;
-    this.dataLog = []; // offchain database
+    this.dataLog = ["deviceCreated"]; // offchain database
     this.submitCount = 0;
     this.generateData = function(newData) {
-        dataLog.push({time:new Date(), content: newData});
+        this.dataLog.push(newData);
         return;
     };
     this.submitDataLog = function() {
