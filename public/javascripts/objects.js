@@ -3,17 +3,34 @@ to a specific deployment url, using a specific address.*/
 
 /*User needs to specify which contract to deploy, and pass in the 
 parameters used in the constructor of contracts.*/
-DbGatekeeper=function(hosturl,RC){
+var utils=require('../../bkc_utils');
+DbGatekeeper=function(hosturl,RC,providerId){
     var web3=require('../../bkc_utils').quickWeb3(hosturl);
-    this.RC=RC;    
-    // var dummyAccount=web3.eth.accounts.create("dummy entropy");
-
+    var deployer=new utils.contractDeployer(hosturl);
+    this.RC=RC;   
     this.PPR_List=[];
-    // this.ethAddressList=[{patientID:"dummy",ethAccount:dummyAccount.address}];
-    
-    this.getPatientProfile=function(patientID){
+    this.keeperAccount;
+    this.keeperPersonal;
+    this.hosturl=hosturl;
+    this.providerId=providerId;
+
+    this.init=async function(){
+        var utils=require('../../bkc_utils');
+        var result=await utils.quickAccount(hosturl);    
+        this.keeperAccount=result.account;
+        this.keeperPersonal=result.personal;
+    }
+    this.init();
+
+    this.getPatientProfile=async function(patientID){
         //go to RC and retrieve the profile.
-        return {ethAddress:"...",SC:"a sc contract object"};
+    
+        var paddress=await RC.methods.getEthAddr(patientID).call({from:this.keeperPersonal,gasPrice:'0'});
+        var scaddress=await RC.methods.getSCAddr(patientID).call({from:this.keeperPersonal,gasPrice:'0'});
+        
+        var SC=deployer.Contract_at("SC",scaddress);
+        
+        return {patientAddress:paddress,SC:SC};
     }
     
     this.verifyIdentity=function(signed_query_object,ethAddress){
@@ -29,20 +46,49 @@ DbGatekeeper=function(hosturl,RC){
         }
     }
 
-    this.verifyPermission=function(SC){
-        return true;
+    this.verifyPermission=async function(querorID,query){
+        
+        var owner=await this.getPatientProfile(query.ownerID);
+        
+        var SC=owner.SC;
+        
+        
+        var pprAddr=await SC.methods.getPPRAddress(this.providerId).call({from:this.keeperPersonal,gasPrice:'0'});
+        
+        var status=await SC.methods.getStatus(pprAddr).call({from:this.keeperPersonal,gasPrice:'0'});
+        if(status==0)
+            {
+                console.log("Provider"+this.providerId+" is not serving "+query.ownerID);
+                return false;
+            }
+        
+        var PPR=deployer.Contract_at('PPR',pprAddr);
+        var permission=await PPR.methods.getPermission(query.query).call({from:this.keeperPersonal,gasPrice:'0'});
+    
+        if(permission==1)
+           {
+               console.log("This is a public data.");
+                return true;//i.e., the record is public, the permission is granted.
+           }
+        else if(permission==0)
+            {   console.log("This is a piece of private data");
+                return querorID==query.ownerID;
+            } //i.e., the record is private, the permission is only granted to owner herself.
+        
+        return false;
+
     }
 
-    this.handleQuery=function(patientID,query,signed_query_object){
+    this.handleQuery=function(querorID,query,signed_query_object){
         var profile=this.getPatientProfile(patientID);
         var verify=this.verifyIdentity(signed_query_object,profile.ethAccount);
         
         if(verify==false)
             {
-                console.log("Patient does not match signature.");
+                console.log("Queror ID does not match signature.");
                 return null;
             }
-        verify=this.verifyPermission(patientID,query,SC);
+        verify=this.verifyPermission(querorID,query);
 
         if(verify==false)
         {

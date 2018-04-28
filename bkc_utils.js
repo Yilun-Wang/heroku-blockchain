@@ -62,7 +62,12 @@ module.exports= {
         if(this.url_toDeploy==undefined)
             url_toDeploy="http://localhost:8545";
     
-       
+    this.Contract_at=function(contractType,address){
+        var RC=this.generateTemplate(contractType).template;
+        RC.options.address=address;
+        return RC;
+    }
+    
        this.RC_deploy=async function(){
            console.log("Deploying an RC");
            let result;
@@ -87,10 +92,10 @@ module.exports= {
             return result;
     }
     
-        this.generateTemplate=function(sc_type){
+        this.generateTemplate=function(contractType){
           
             var format_src;
-            switch(sc_type){
+            switch(contractType){
                 case "RC": format_src='./build/contracts/RC.json'; break;
                 case "PPR": format_src='./build/contracts/PPR.json'; break;
                 case "SC": format_src='./build/contracts/SC.json'; break;
@@ -119,13 +124,12 @@ module.exports= {
     
             let contract_instance;
             try{
-                console.log("before deploy");
             contract_instance=await contract_generator.template.deploy(
             {
                 data:contract_generator.format.bytecode,
                 arguments:[param1,param2]
             }).send({gas:gasEstimate,gasPrice:'0',from:this.senderAddr});}catch(e){console.log("err",e);}
-        //    console.log(contract_instance);
+           console.log("Deployment complete");
             return contract_instance;
         }
         
@@ -135,8 +139,46 @@ module.exports= {
         var web3=new Web3();
         web3.setProvider(new Web3.providers.HttpProvider(hosturl));
         return web3;
-    }
+    },
+    quickAccount: async function(hosturl){
+        var Web3=require('web3');
+        var web3=new Web3();
+        web3.setProvider(new Web3.providers.HttpProvider(hosturl));
+
+        var nounce=Math.random().toString();
+        /*Account creation*/    
+        var account=web3.eth.accounts.create(web3.utils.sha3(nounce));
+        
+        var personal= await web3.eth.personal.newAccount(account.privateKey);
+        
+        /*Account unlock*/
+        var unlock;
+        try{
+        unlock=await web3.eth.personal.unlockAccount(personal,account.privateKey);
+        if(unlock==true)
+            console.log("Successful unlock");
+        }catch(e){console.log(e)};
+
+        return {account:account,personal:personal};
+    },
+   deployDumyRC:async function(hosturl){
+        var quickWeb3=module.exports.quickWeb3;
+        var web3=quickWeb3(hosturl);
+        var deployer=module.exports.contractDeployer;
+        
+        var genesysAccount=await web3.eth.personal.newAccount("genesys");
       
+        let unlock;
+        try{
+            unlock=await web3.eth.personal.unlockAccount(genesysAccount,"genesys");}catch(e){console.log(e);}
+        
+        var d=new deployer(hosturl,genesysAccount);
+        
+        var result= await d.RC_deploy();
+        return result;
+      
+      }
+    
     
     
 }    
