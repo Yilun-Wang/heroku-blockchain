@@ -4,13 +4,13 @@ function medicalDevice(id, name) {
     this.dataLog = []; // offchain database
     this.submitCount = 0;
     this.generateData = function(newData,publicKey=null) {
-        
-        var data={time:new Date(), content: newData};
+    var now=new Date();       
+        var data="\nTime:"+now+"\nContent:"+newData;
         
         if(publicKey==null)
-            dataLog.push(data);
+            this.dataLog.push(data);
         else
-            dataLog.push(this.encrypt(publicKey,data));
+            this.dataLog.push(this.encrypt(publicKey,data+""));
         
             return;
     };
@@ -27,15 +27,18 @@ function medicalDevice(id, name) {
     
     this.handleQuery = function(index) {
         var result;
-        if (index < this.submitCount) {
-            result = this.dataLog.slice(this.submitCount - count, this.submitCount); // newest records
+        if (index < this.dataLog.length) {
+            // result = this.dataLog.slice(this.submitCount - count, this.submitCount); // newest records
+            result=this.dataLog[index];
         }
         return result;
     };
 
     this.encrypt = function(publicKey, data) {
-        var cryptico=require('cryptico');
+        var cryptico=require('../../node_modules/cryptico');
+
         data=cryptico.encrypt(data.toString(),publicKey.toString()).cipher;
+        
         return data; // plain text, no encryption
     };
 }
@@ -93,13 +96,16 @@ function patient(id, name) {
 
         return;
     }
+    this.generateKeyPair();
 
-    this.decrypt = function(privateKey, cipher) {
+    this.decrypt = function(cipher,privateKey=this.privateKey) {
 
         var cryptico=require('cryptico');
         var decryption = cryptico.decrypt(cipher,privateKey);
+        
         return decryption.plaintext; // plain text, no decryption
     };
+    
 }
 
 exports.patient=patient;

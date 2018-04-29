@@ -192,7 +192,7 @@ PatientGatekeeper=function(hosturl,patientID,RC){
     }
     
 
-    this.query=async function(dbGateKeeper,ownerID,queryIndex){
+    this.queryTemplate=async function(dbGateKeeper,ownerID,queryIndex){
         if(!this.initialized)
             {
                 console.log("Keeper not initialized, please await init() first");
@@ -208,12 +208,8 @@ PatientGatekeeper=function(hosturl,patientID,RC){
                 console.log("db Gate keeper is not defined.");
                 return;
             }
-        else{
-            
-        /*Get query result */
-            var result=await dbGateKeeper.handleQuery(this.patientID,query,signature);
-            return result;
-        }
+
+        return {queryObject:query,signature:signature}; 
     }
 }
 module.exports.DbGatekeeper=DbGatekeeper;
