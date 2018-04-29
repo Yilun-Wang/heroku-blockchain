@@ -162,7 +162,7 @@ parameters used in the constructor of contracts.*/
         try{
         unlock=await web3.eth.personal.unlockAccount(personal,account.privateKey);
         if(unlock==true)
-            console.log("Successful unlock");
+            console.log("New eth account unlocked.");
         }catch(e){console.log(e)};
 
         return {account:account,personal:personal};

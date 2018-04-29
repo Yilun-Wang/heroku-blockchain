@@ -1,4 +1,4 @@
-var hosturl="http://localhost:7545";
+var hosturl="http://localhost:7000";
 
 var utils=require('../bkc_utils');
 var web3=utils.quickWeb3(hosturl);
@@ -19,15 +19,35 @@ async function main() {
     await device.init();
     /*Use case 1: patient do measurement */
     patient.measure(device);
+    patient.measure(device);
+    patient.measure(device);
+    await patient.query(device,0);
+    await patient.query(device,1);
+    await patient.query(device,2);
+    
     /*Use case 2: device submit data */
     await device.submitDataLogFor(patient);
+    
     /*Use case 3: patient query data */
+    
     patient.query(device,0).then(
         function(result){
         console.log("Result:",result);
         console.log("Plain text:",patient.patient.decrypt(result));
                                 });
-}
+
+    patient.query(device,1).then(
+        function(result){
+        console.log("Result:",result);
+        console.log("Plain text:",patient.patient.decrypt(result));
+                                });                                
+
+    patient.query(device,2).then(
+        function(result){
+        console.log("Result:",result);
+        console.log("Plain text:",patient.patient.decrypt(result));
+                                });
+    }
 main();
 // var message="I am the flash";
 // var ciper=device.device.encrypt(patient.patient.publicKey,message);
