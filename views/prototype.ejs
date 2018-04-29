@@ -30,12 +30,21 @@
   </select>
     <button id=submitDataBtn"">Click to Submit Data</button>
 
-<h2>User Text:</h2>
-<h3 id="middleText"><%=middleText%></h3>
+<table id="middleTextTable">
+    <tr>
+        <th>Middle Text</th>
+    </tr>
+
+    <%for(var p of middleText){%>
+        <tr>
+            <td><%=p%></td>
+        </tr>
+    <%}%>
+</table>
 </form>
 
 
-
+<br><br>
 <h2>User View:</h2>
 
 <form id="userView" method="get" action="/prototype/userView">
@@ -47,7 +56,7 @@
   <button id="viewDataBtn"> View My Data </button>
 
 <h2>User Text:</h2>
-<h3 id="userText"><%=userText%></h3>
+<h3><%=userText%></h3>
 </form>
 
 </body>

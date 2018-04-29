@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var middleText="";
+var middleText=["init"];
 var userText="";
 var init=false;
 
@@ -16,46 +16,35 @@ var deviceList = [device1, device2];
 router.get('/', function(req, res, next) {
     if (!init) {
         init=true;
-        the_patient.generateKeyPair();
-        middleText = middleText.concat("Key Pair Generated. Public Key: "+ the_patient.publicKey);
+        the_patient.generateKeyPair();middleText.push("Key Pair Generated.");
+        middleText.push("Public Key: "+ the_patient.publicKey);
     }
     res.render("prototype",
         {
             middleText:middleText,
             userText:userText
     });
-    //res.send('respond test');
 });
 
 router.get('/genData', function(req, res, next) {
 
     console.log("genData");
     if (parseInt(req.query.device)==1) {
-        device1.generateData("Blood Pressure: systolic "+ (90+30*Math.random()) +" mmHg, diastolic "+ (60+30*Math.random()) +" mmHg.\n");
+        device1.generateData("Blood Pressure: systolic "+ (90+30*Math.random()) +" mmHg, diastolic "+ (60+30*Math.random()) +" mmHg.");
     } else {
-        device2.generateData("Weight: "+ (50+5*Math.random()) +" kg.\n");
+        device2.generateData("Weight: "+ (50+5*Math.random()) +" kg.");
     }
+    middleText.push("Data generated.");
     res.redirect("/prototype");
 });
 
 router.get('/submitDataLog', function(req, res, next) {
 
-    /*var the_device;
-    if (req.query.device==1) {
-        the_device = device1;
-    } else {
-        the_device = device2;
-    }
-
-    the_device.submitDataLog();
-    middleText.concat(the_device.deviceName+" summited its data.<br>");*/
-
     console.log("submitDataLog");
     var i = parseInt(req.query.device);
     console.log(i);
     deviceList[i-1].submitDataLog();
-    middleText = middleText.concat(deviceList[i-1].deviceName+" summited its data.\n");
-
+    middleText.push(deviceList[i-1].deviceName+" summited its data.");
     res.redirect("/prototype");
 });
 
