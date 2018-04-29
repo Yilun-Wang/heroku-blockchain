@@ -41,26 +41,27 @@ await PPR.methods.updatePermission(1,0).send({from:personal,gasPrice:'0'});
 await SC.methods.addPPR(providerId,PPR.options.address).send({from:personal,gasPrice:'0'});
 
 /*Initialize a gatekeeper for the provider*/
-var gatekeeper=require('../public/javascripts/objects').DbGatekeeper;
+var gatekeeper=require('../public/javascripts/ethNodes').DbGatekeeper;
 gatekeeper=new gatekeeper(hosturl,RC,providerId);
+await gatekeeper.init();
 
 /*Get profile by id*/
 var result=await gatekeeper.getPatientProfile(patientID);
 
 // var result=await gatekeeper.getPatientProfile("not exist");
 
-result=await gatekeeper.verifyPermission(patientID,{ownerID:patientID,query:0});
+result=await gatekeeper.verifyPermission(patientID,{ownerID:patientID,queryIndex:0});
 console.log(result);
 
-result=await gatekeeper.verifyPermission(patientID,{ownerID:patientID,query:1});
-console.log(result);
-
-
-result=await gatekeeper.verifyPermission("nobody",{ownerID:patientID,query:1});
+result=await gatekeeper.verifyPermission(patientID,{ownerID:patientID,queryIndex:1});
 console.log(result);
 
 
-result=await gatekeeper.verifyPermission("nobody",{ownerID:patientID,query:0});
+result=await gatekeeper.verifyPermission("nobody",{ownerID:patientID,queryIndex:1});
+console.log(result);
+
+
+result=await gatekeeper.verifyPermission("nobody",{ownerID:patientID,queryIndex:0});
 console.log(result);
 
 }

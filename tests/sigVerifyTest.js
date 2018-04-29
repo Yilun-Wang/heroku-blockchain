@@ -36,9 +36,18 @@ console.log(verfication);
 // main();
 
 //Off chain signature and recover using web3 1.0
-var ethAccount=web3.eth.accounts.create("random entropy");
-console.log(ethAccount);
-var message="I am the flash.";
-var signature=ethAccount.sign(message);
+// var ethAccount=web3.eth.accounts.create("random entropy");
+// console.log(ethAccount);
+var message={number:1,character:'k'};
 
-console.log(web3.eth.accounts.recover(signature));
+async function main2(){
+ethAccount=await utils.quickAccount(hosturl);
+console.log("personal",ethAccount.personal);
+signature= await web3.eth.sign(utils.prefixhash(message),ethAccount.personal);
+console.log(signature);
+console.log(await web3.eth.accounts.recover(utils.prefixhash(message),signature));
+}
+
+main2();
+// var message='Some data';
+// console.log(web3.utils.sha3("\x19Ethereum Signed Message:\n" + message.length+message));

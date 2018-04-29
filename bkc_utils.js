@@ -49,6 +49,11 @@ module.exports= {
         
     //     return contract.verify(h,RSV.v,RSV.r,RSV.s);
     // },
+
+    /*The contractDeployer deploys MedRec contracts on sender's demand, 
+to a specific deployment url, using a specific address.*/
+    /*Users need to specify which contract to deploy, and pass in the 
+parameters used in the constructor of contracts.*/
     contractDeployer: function(_url_toDeploy,_senderAddr){
         var Web3=require('web3');
         var web3=new Web3(new Web3.providers.HttpProvider(_url_toDeploy));
@@ -177,7 +182,10 @@ module.exports= {
         var result= await d.RC_deploy();
         return result;
       
-      }
+      },
+      prefixhash: function (message){
+        return web3.utils.sha3("\x19Ethereum Signed Message:\n" + message.length + message);
+    }
     
     
     
