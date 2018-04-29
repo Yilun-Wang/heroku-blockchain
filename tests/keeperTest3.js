@@ -9,7 +9,7 @@ async function main() {
     /*Create a db keeper. */
     var providerId="RookieProvider";
     var gatekeeper=require('../public/javascripts/gateKeepers').DbGatekeeper;
-    gatekeeper=new gatekeeper(hosturl,RC,providerId);
+    gatekeeper=new gatekeeper(hosturl,providerId,RC);
     await gatekeeper.init();
 
     
@@ -21,7 +21,8 @@ async function main() {
     await patientKeeper.query(gatekeeper,patientID,0);
 
     
-    // await gatekeeper.submitDataHash(patientID,0,"I am the flash");
+    await gatekeeper.submitDataHash(patientID,0,"I am the flash");
 
+    await patientKeeper.query(gatekeeper,patientID,0);
 }
 main();

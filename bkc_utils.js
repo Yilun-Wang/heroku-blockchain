@@ -128,6 +128,7 @@ parameters used in the constructor of contracts.*/
             // console.log(this.senderAddr);
     
             let contract_instance;
+
             try{
             contract_instance=await contract_generator.template.deploy(
             {

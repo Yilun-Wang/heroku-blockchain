@@ -21,6 +21,7 @@ DbGatekeeper=function(hosturl,providerId,RC){
         this.keeperAccount=result.account;
         this.keeperPersonal=result.personal;
         this.initialized=true;
+        
     }
     
 
@@ -32,6 +33,7 @@ DbGatekeeper=function(hosturl,providerId,RC){
                 return;}
 
         var paddress=await RC.methods.getEthAddr(patientID).call({from:this.keeperPersonal,gasPrice:'0'});
+        
         var scaddress=await RC.methods.getSCAddr(patientID).call({from:this.keeperPersonal,gasPrice:'0'});
         
         var SC=deployer.Contract_at("SC",scaddress);
@@ -114,15 +116,16 @@ DbGatekeeper=function(hosturl,providerId,RC){
             console.log("Patient does not have the permission with this query.");
             return false;
         }
+        console.log("Permission confirmed.");
         return true;
     }  
     this.submitDataHash=async function(patientID,dataIndex,data){
+        
         var hash=web3.utils.sha3(data);
         
         var patient=await this.getPatientProfile(patientID);
         
         var SC=patient.SC;
-        
         
         var pprAddr=await SC.methods.getPPRAddress(this.providerId).call({from:this.keeperPersonal,gasPrice:'0'});
         
@@ -132,9 +135,11 @@ DbGatekeeper=function(hosturl,providerId,RC){
             {
                 /*The PPR does not exists yet, create a new one. */
                 console.log("Creating new PPR for provider '"+this.providerId+"' and patient '"+patientID+"'");
-
+                deployer=new utils.contractDeployer(hosturl,this.keeperPersonal);
                 PPR=await deployer.PPR_deploy(patientID,this.providerId);
                 
+                /*Also update SC*/
+                await SC.methods.addPPR(this.providerId,PPR.options.address).send({from:this.keeperPersonal,gasPrice:'0'});
             }else{
                 /*The PPR exists already. */
                 PPR=deployer.Contract_at('PPR',pprAddr);
@@ -144,6 +149,7 @@ DbGatekeeper=function(hosturl,providerId,RC){
         await PPR.methods.updatePermission(dataIndex,0).send({from:this.keeperPersonal,gasPrice:'0'});
         await PPR.methods.updateDataHash(dataIndex,hash).send({from:this.keeperPersonal,gasPrice:'0'});
         
+
     }        
 }
 
