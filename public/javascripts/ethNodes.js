@@ -4,6 +4,8 @@ var pGateKeeper=require('./gateKeepers').PatientGatekeeper;
 var Device=require('./objects').medicalDevice;
 var dbGateKeeper=require('./gateKeepers').DbGatekeeper;
 
+var global=require('../../global');
+
 patientNode=function(id,name,hosturl,RC){
     
     this.patient=new Patient(id.toString(),name.toString());
@@ -19,29 +21,30 @@ patientNode=function(id,name,hosturl,RC){
                 await this.gateKeeper.init();
             }
             else{
-                console.log('Information needed for initialization');
-                
+                //console.log('Information needed for initialization');
+                global.log('Information needed for initialization');
                 if(id==undefined)
-                    console.log('please provide id');
-                
+                    //console.log('please provide id');
+                global.log('please provide id');
                 if(hosturl==undefined)
-                    console.log('please provide hosturl');
-                
+                    //console.log('please provide hosturl');
+                global.log('please provide hosturl');
                 if(RC==undefined)
-                    console.log('please provide RC');
-            }
+                    //console.log('please provide RC');
+            globalconsole.log('please provide RC');
     }
-    
+}
 
     this.query=async function(deviceNode,queryIndex=undefined,ownerID=this.patient.patientID){
         if(this.gateKeeper==undefined)
             {
-                console.log('gate keeper is not initialized, initializing.');
-                await this.init();
+                //console.log('gate keeper is not initialized, initializing.');
+                global.log('gate keeper is not initialized, initializing.');
+                 this.init();
             }
         var query=await this.gateKeeper.queryTemplate(deviceNode.gateKeeper,ownerID,queryIndex);
-        // console.log(query);
-        var result=await deviceNode.handleQuery(this.patient.patientID,query.queryObject,query.signature);
+       
+        result=await deviceNode.handleQuery(this.patient.patientID,query.queryObject,query.signature);
         return result;
     }
     
@@ -64,19 +67,19 @@ deviceNode=function(_deviceId,_deviceName,hosturl,RC){
                     await this.gateKeeper.init();
                 }
             else{
-                console.log('Information needed for initialization');
-                
+                //console.log('Information needed for initialization');
+                global.log('Information needed for initialization');
                 if(_deviceId==undefined)
-                    console.log('please provide id');
-                
+                    //console.log('please provide id');
+                global.log('please provide id');
                 if(hosturl==undefined)
-                    console.log('please provide hosturl');
-                
+                    //console.log('please provide hosturl');
+                global.log('please provide hosturl');
                 if(RC==undefined)
-                    console.log('please provide RC');
-            }
+                    //console.log('please provide RC');
+            globalconsole.log('please provide RC');
     }
-    
+}
     this.generateDataFor=function(patientNode){
         
         var data="Heart Rate:"+(30+Math.floor(Math.random()*60));
@@ -89,17 +92,17 @@ deviceNode=function(_deviceId,_deviceName,hosturl,RC){
     this.handleQuery=async function(querorID,query_object,signed_query_object){
         if(this.gateKeeper==undefined)
             {
-                console.log("dbGateKeeper is not initialized yet.");
-                await this.init();
+                global.log("dbGateKeeper is not initialized yet.");
+                 this.init();
             }
         
         /*If the index is not specified, simply return the latest measurement outcome.*/
         if(query_object.queryIndex==undefined)
             query_object.queryIndex=this.device.dataLog.length-1;
 
-            // console.log(querorID,query_object,signed_query_object);
-        var permit=await this.gateKeeper.handleQuery(querorID,query_object,signed_query_object);
-            // var permit;
+            
+         permit=await this.gateKeeper.handleQuery(querorID,query_object,signed_query_object);
+        
         if(permit==true)
             return this.device.handleQuery(query_object.queryIndex);
         else{

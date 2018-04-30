@@ -50,7 +50,7 @@ function initObjects() {
 
 }
 function log(message) {
-    middleText.push(message.toString());
+    global.log(message);
 }
 function flushLog() {
     middleText = [];
@@ -64,7 +64,7 @@ router.get('/', function (req, res, next) {
     res.render("prototype_2",
         {
             patient:patientNode.patient,
-            middleText: middleText,
+            middleText: global.getLog(),
             userText: userText
         });
 
