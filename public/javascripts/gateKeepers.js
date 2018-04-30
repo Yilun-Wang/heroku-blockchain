@@ -10,8 +10,8 @@ DbGatekeeper=function(hosturl,providerId,RC){
     this.PPR_List=[];
     this.keeperAccount;
     this.keeperPersonal;
-    this.hosturl=hosturl;
-    this.providerId=providerId;
+    this.hosturl=hosturl.toString();
+    this.providerId=providerId.toString();
     this.initialized=false;
     
 
@@ -169,8 +169,8 @@ PatientGatekeeper=function(hosturl,patientID,RC){
     this.PPR_List=[];
     this.keeperAccount;
     this.keeperPersonal;
-    this.hosturl=hosturl;
-    this.patientID=patientID;
+    this.hosturl=hosturl.toString();
+    this.patientID=patientID.toString();
     this.initialized=false;
     this.SC;
     
@@ -186,7 +186,7 @@ PatientGatekeeper=function(hosturl,patientID,RC){
         var deployer=new utils.contractDeployer(hosturl,this.keeperPersonal);
 
         this.SC=await deployer.SC_deploy(this.patientID,this.keeperPersonal);
-        
+        // console.log(RC);
         await RC.methods.registerEthAddr(this.patientID,this.keeperPersonal).send({from:this.keeperPersonal,gasPrice:'0'});
         await RC.methods.registerSCAddr(this.patientID,this.SC.options.address).send({from:this.keeperPersonal,gasPrice:'0'});
     }
