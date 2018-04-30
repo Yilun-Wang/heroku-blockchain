@@ -6,7 +6,7 @@
     <option value="2"> Weight Scale </option>
   </select>
 </form>
-<button id="viewDataBtn"> View My Data </button>
+<button id="viewDataBtn"> View My Data </button><img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='loadingMyData'/ >
 
 
 <br>
@@ -16,7 +16,7 @@
 
 <button id='decryptBtn'>Decrypt</button>
 <script type="text/javascript">
-  
+  $("#loadingMyData").hide();
  $('#decryptBtn').click(function(){
     $.post("/prototype/decryptRSA",{cipher:$("#userText").text()},function(data,status){
       
@@ -27,9 +27,9 @@
   
   $('#viewDataBtn').click(function(){
     
-
+    $("#loadingMyData").show();
     $.get("/prototype/userView",{device:$('#device').val()},function(data,status){
-        
+      $("#loadingMyData").hide();
         $('#userText').text(data);
         
       });

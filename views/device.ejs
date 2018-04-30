@@ -17,4 +17,11 @@
     <option value="1" selected> Blood Pressure Meter </option>
     <option value="2"> Weight Scale </option>
   </select>
-    <button id=submitDataBtn"">Click to Submit Data</button>
+    <button id=submitDataBtn"">Click to Submit Data</button><img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='submittingData'/ >
+
+<script type="text/javascript">
+  $('#submittingData').hide();
+  $('submitDataBtn').click(function(){
+    $('#submittingData').show();
+  })
+</script>

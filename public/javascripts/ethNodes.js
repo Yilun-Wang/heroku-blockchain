@@ -77,7 +77,7 @@ deviceNode=function(_deviceId,_deviceName,hosturl,RC){
                 global.log('please provide hosturl');
                 if(RC==undefined)
                     //console.log('please provide RC');
-            globalconsole.log('please provide RC');
+                global.log('please provide RC');
     }
 }
     this.generateDataFor=function(patientNode){

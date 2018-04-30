@@ -108,6 +108,7 @@ router.get('/userView', function (req, res, next) {
 
         userText = result;
         res.send(userText);
+        // res.redirect('/prototype');
         });
 });
 
