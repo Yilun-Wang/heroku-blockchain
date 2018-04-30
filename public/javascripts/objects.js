@@ -1,18 +1,26 @@
 function medicalDevice(id, name) {
     this.deviceID = id;
     this.deviceName = name;
-    this.dataLog = []; // offchain database
+    this.dataLog = ["deviceCreated"]; // offchain database
     this.submitCount = 0;
+    
     this.generateData = function(newData,publicKey=null) {
-    var now=new Date();       
+        var now=new Date();       
         var data="\nTime:"+now+"\nContent:"+newData;
         
         if(publicKey==null)
             this.dataLog.push(data);
         else
             this.dataLog.push(this.encrypt(publicKey,data+""));
-        
-            return;
+        return;
+    };
+    
+    this.submitDataLog = function() {
+        for (var i = this.submitCount; i < this.dataLog.length; i++) {
+             // submit hash(this.dataLog[i]) to smart contract
+        }
+        this.submitCount = this.dataLog.length;
+        return;
     };
     
     this.handleQuery = function(count, publicKey) {
