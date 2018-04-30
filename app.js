@@ -43,4 +43,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
+app.locals.RC='';
+
 module.exports = app;

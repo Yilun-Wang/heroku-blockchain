@@ -1,13 +1,20 @@
-
 function medicalDevice(id, name) {
     this.deviceID = id;
     this.deviceName = name;
     this.dataLog = ["deviceCreated"]; // offchain database
     this.submitCount = 0;
-    this.generateData = function(newData) {
-        this.dataLog.push(newData);
+    
+    this.generateData = function(newData,publicKey=null) {
+        var now=new Date();       
+        var data="\nTime:"+now+"\nContent:"+newData;
+        
+        if(publicKey==null)
+            this.dataLog.push(data);
+        else
+            this.dataLog.push(this.encrypt(publicKey,data+""));
         return;
     };
+    
     this.submitDataLog = function() {
         for (var i = this.submitCount; i < this.dataLog.length; i++) {
              // submit hash(this.dataLog[i]) to smart contract
@@ -15,6 +22,7 @@ function medicalDevice(id, name) {
         this.submitCount = this.dataLog.length;
         return;
     };
+    
     this.handleQuery = function(count, publicKey) {
         var result;
         if (count < this.submitCount) {
@@ -22,11 +30,23 @@ function medicalDevice(id, name) {
         } else {
             result = this.dataLog.slice(0, this.submitCount);
         }
-        return this.encrypt(publicKey,result);
+        return result;
     };
+    
+    this.handleQuery = function(index) {
+        var result;
+        if (index < this.dataLog.length) {
+            // result = this.dataLog.slice(this.submitCount - count, this.submitCount); // newest records
+            result=this.dataLog[index];
+        }
+        return result;
+    };
+
     this.encrypt = function(publicKey, data) {
-        var cryptico=require('cryptico');
+        var cryptico=require('../../node_modules/cryptico');
+
         data=cryptico.encrypt(data.toString(),publicKey.toString()).cipher;
+        
         return data; // plain text, no encryption
     };
 }
@@ -84,18 +104,18 @@ function patient(id, name) {
 
         return;
     }
+    this.generateKeyPair();
 
-    this.query = function(device) {
-        return device.handleQuery(10, this.publicKey);
-        // should it check the smart contract first ?
-    };
-    this.decrypt = function(privateKey, cipher) {
+    this.decrypt = function(cipher,privateKey=this.privateKey) {
 
         var cryptico=require('cryptico');
         var decryption = cryptico.decrypt(cipher,privateKey);
+        
         return decryption.plaintext; // plain text, no decryption
     };
+    
 }
 
 exports.patient=patient;
 exports.medicalDevice=medicalDevice;
+
