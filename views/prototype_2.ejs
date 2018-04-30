@@ -1,20 +1,47 @@
 <!DOCTYPE objects.html>
 <html>
 <head>
-    <title>Prototype</title>
+    <title>Prototype2</title>
     <meta charset="UTF-8">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <link rel='stylesheet' href='/assets/css/main.css' />
 </head>
 
 <body class="w3-light-grey">
 <h1>This webpage will show the interaction between Patient and MedDevices</h1>
 
-<%- include device.ejs %>
+<!-- These three should be displayed in coloumns -->
 
-<%- include eventLog.ejs %>
-
-<%- include user.ejs %>
-
-</body>
+<style>
+        #deviceView {
+            /* max-width: 200px; */
+           float: left;
+           text-align: center
+        }
+        #eventLog{
+           float: left;
+           padding-right: 10%;
+           padding-left: 10%;
+           /* max-width: 200px; */
+           
+        }
+        #userView{
+            /* max-width: 200px; */
+           float: left;
+           text-align: center
+        }
+</style>
+    
+    
+    <div id='deviceView'>    <%- include device.ejs %>  </div>
+    
+    
+    
+    <div id='eventLog'>   <%- include eventLog.ejs %>  </div>
+    
+    
+    
+    <div id='userView'>   <%- include user.ejs %> </div>
+ 
+</body>   
 </html>

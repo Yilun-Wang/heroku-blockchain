@@ -1,6 +1,6 @@
 
 var utils=require('../../bkc_utils');
-
+var global=require('../../global');
 /*Gate keeper listens on internet and blockchain events, handles data query and new data sync on blockchain, on behalf of
 MedDevice. It is the internet and blockchain proxy of MedDevice.*/
 DbGatekeeper=function(hosturl,providerId,RC){

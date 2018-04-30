@@ -1,14 +1,37 @@
-<br><br>
-<h2>User View:</h2>
+<h2>User View</h2>
 
 <form id="userView" method="get" action="/prototype/userView">
-  <select name="device">
+  <select name="device" id='device'>
     <option value="1" selected> Blood Pressure Meter </option>
     <option value="2"> Weight Scale </option>
   </select>
-  <br><br>
-  <button id="viewDataBtn"> View My Data </button>
-
-<h2>User Text:</h2>
-<h3><%=userText%></h3>
 </form>
+<button id="viewDataBtn"> View My Data </button>
+
+
+<br>
+<br>
+<h2>User Text</h2>
+<textarea readonly='readonly' style="min-height: 150px" id='userText'><%=userText%></textarea>
+
+<button id='decryptBtn'>Decrypt</button>
+<script type="text/javascript">
+  
+ $('#decryptBtn').click(function(){
+    $.post("/prototype/decryptRSA",{cipher:$("#userText").text()},function(data,status){
+      
+      $('#userText').text(data);
+      
+    });
+  });
+  
+  $('#viewDataBtn').click(function(){
+    
+
+    $.get("/prototype/userView",{device:$('#device').val()},function(data,status){
+        
+        $('#userText').text(data);
+        
+      });
+  });
+</script>

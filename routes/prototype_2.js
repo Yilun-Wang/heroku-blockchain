@@ -42,7 +42,7 @@ function initObjects() {
 
                 log("Key Pair Generated.");
                 
-                log("Public Key: " + the_patient.publicKey);
+                // log("Public Key: " + the_patient.publicKey);
 
             });
         });
@@ -50,7 +50,7 @@ function initObjects() {
 
 }
 function log(message) {
-    middleText.push(message);
+    middleText.push(message.toString());
 }
 function flushLog() {
     middleText = [];
@@ -61,8 +61,9 @@ router.get('/', function (req, res, next) {
         initObjects();
     }
 
-    res.render("prototype",
+    res.render("prototype_2",
         {
+            patient:patientNode.patient,
             middleText: middleText,
             userText: userText
         });
@@ -98,18 +99,28 @@ router.get('/submitDataLog', function (req, res, next) {
 
 router.get('/userView', function (req, res, next) {
 
-    console.log("userView");
+    
+    console.log(req.query);
     var i = parseInt(req.query.device);
     console.log(i);
 
     the_patientNode.query(deviceNodeList[i - 1]).then(function (result) {
 
         userText = result;
-        // userText = the_patient.decrypt(the_patient.privateKey, result);
-
-        res.redirect("/prototype");
-    });
+        res.send(userText);
+        });
 });
+
+router.post('/decryptRSA', function (req, res, next) {
+   
+    var plaintext=the_patient.decrypt(req.body.cipher);
+    
+    userText=plaintext;
+
+    res.send(userText);
+    
+});
+
 
 
 module.exports = router;

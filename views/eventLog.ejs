@@ -1,13 +1,14 @@
 
 <table id="middleTextTable">
-    <tr>
-        <th>Middle Text</th>
-    </tr>
+    
+        <h2>Event Log</h2>
+    
 
-    <%for(var p of middleText){%>
+    <%for(var i=middleText.length-1;i>=0;i--){%>
         <tr>
-            <td><%=p%></td>
+            <td><%=middleText[i]%></td>
         </tr>
     <%}%>
+
 </table>
 </form>
