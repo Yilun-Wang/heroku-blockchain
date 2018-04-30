@@ -12,10 +12,14 @@ contract PPR{
     
     mapping (uint => int) Permission;/*Input the index of piece of data offchain,
     return its Permission*/
+    /*  Permission Values
+     0:private to owner, with id being the PatientID stated in the PPR.
+     1:public to anyone
+     */
     
     mapping (uint => uint) DataHash;/*Input the index of the piece of data offchain, return the hash for the offchain piece of data.*/
     
-     function PPR(string _PatientID, string _ProviderID)public{
+     constructor(string _PatientID, string _ProviderID)public{
         PatientID=_PatientID;
         ProviderID=_ProviderID;
     }
