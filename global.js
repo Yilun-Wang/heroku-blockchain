@@ -6,6 +6,7 @@ module.exports={
     hosturl: GlobalHosturl,
     log:function(message){
         log.push(message);
+        console.log(message);
     },
     getLog:function(){
         return log;

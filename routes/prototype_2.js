@@ -21,29 +21,45 @@ var device2;
 var deviceList;
 var deviceNodeList;
 
+async function deployRC(hosturl) {
+
+    console.log(hosturl);
+    var utils = require('../bkc_utils');
+    var web3 = utils.quickWeb3(hosturl);
+    var account = await utils.quickAccount(hosturl)
+    var genesysAccount = account.personal;
+    var deployer = new utils.contractDeployer(hosturl, genesysAccount);
+    var RC = await deployer.RC_deploy()
+    global.RC = RC;
+
+
+}
 
 function initObjects() {
 
-    deviceNode1 = new deviceNode('101', "Blood Pressure Meter", global.hosturl, global.RC);
-    deviceNode2 = new deviceNode('102', "Weight Scale", global.hosturl, global.RC);
-
-    device1 = deviceNode1.device;
-    device2 = deviceNode2.device;
-    deviceList = [device1, device2];
-    deviceNodeList = [deviceNode1, deviceNode2];
-
-    the_patientNode = new patientNode('2000', 'Alice', global.hosturl, global.RC);
-    the_patient = the_patientNode.patient;
     // console.log('Global RC',global.RC);
-    deviceNode1.init().then(function () {
-        deviceNode2.init().then(function () {
+    deployRC(global.hosturl).then(function () {
 
-            the_patientNode.init().then(function () {
+        deviceNode1 = new deviceNode('101', "Blood Pressure Meter", global.hosturl, global.RC);
+        deviceNode2 = new deviceNode('102', "Weight Scale", global.hosturl, global.RC);
 
-                log("Key Pair Generated.");
-                
-                // log("Public Key: " + the_patient.publicKey);
+        device1 = deviceNode1.device;
+        device2 = deviceNode2.device;
+        deviceList = [device1, device2];
+        deviceNodeList = [deviceNode1, deviceNode2];
 
+        the_patientNode = new patientNode('2000', 'Alice', global.hosturl, global.RC);
+        the_patient = the_patientNode.patient;
+
+        deviceNode1.init().then(function () {
+            deviceNode2.init().then(function () {
+                the_patientNode.init().then(function () {
+
+                    log("Key Pair Generated.");
+
+                    // log("Public Key: " + the_patient.publicKey);
+
+                });
             });
         });
     });
@@ -63,7 +79,7 @@ router.get('/', function (req, res, next) {
 
     res.render("prototype_2",
         {
-            patient:patientNode.patient,
+            patient: patientNode.patient,
             middleText: global.getLog(),
             userText: userText
         });
@@ -80,15 +96,15 @@ router.get('/genData', function (req, res, next) {
     } else {
         deviceNode2.generateDataFor(the_patientNode, "Weight: " + (50 + 5 * Math.random()) + " kg.");
     }
-    log("Data generated.");
+    global.log("Data generated.");
     res.redirect("/prototype");
 });
 
 router.get('/submitDataLog', function (req, res, next) {
 
-    console.log("submitDataLog");
+    global.log("submitDataLog");
     var i = parseInt(req.query.device);
-    console.log(i);
+    global.log(i);
     deviceNodeList[i - 1].submitDataLogFor(the_patientNode).then(function () {
 
         log(deviceNodeList[i - 1].device.deviceName + " summited its data.");
@@ -99,27 +115,27 @@ router.get('/submitDataLog', function (req, res, next) {
 
 router.get('/userView', function (req, res, next) {
 
-    
-    console.log(req.query);
+
+    global.log(req.query);
     var i = parseInt(req.query.device);
-    console.log(i);
+    global.log("Querying Device "+i);
 
     the_patientNode.query(deviceNodeList[i - 1]).then(function (result) {
 
         userText = result;
-        res.send(userText);
-        // res.redirect('/prototype');
-        });
+        // res.send(userText);
+        res.redirect('/prototype');
+    });
 });
 
 router.post('/decryptRSA', function (req, res, next) {
-   
-    var plaintext=the_patient.decrypt(req.body.cipher);
-    
-    userText=plaintext;
+
+    var plaintext = the_patient.decrypt(req.body.cipher);
+
+    userText = plaintext;
 
     res.send(userText);
-    
+
 });
 
 

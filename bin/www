@@ -13,8 +13,8 @@ var debug = require('debug')('demo:server');
 var http = require('http');
 var global=require('../global');
 
-global.hosturl="https://fathomless-depths-36951.herokuapp.com/";
-// global.hosturl="http://localhost:7545";
+// global.hosturl="https://fathomless-depths-36951.herokuapp.com/";
+global.hosturl="http://localhost:7545";
 /**
  * Create HTTP server.
  */
@@ -24,7 +24,7 @@ var server = http.createServer(app);
  * Get port from environment and store in Express.
  */
 
-deployRC(global.hosturl,app).then(function(){
+
 var port = normalizePort(process.env.PORT || '3000');
 
 app.set('port', port);
@@ -39,7 +39,7 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 console.log('init done');
-});
+
 /**
  * Normalize a port into a number, string, or false.
  */
@@ -101,17 +101,17 @@ function onListening() {
 }
 
 
-async function deployRC(hosturl,app){
+// async function deployRC(hosturl){
 
-  console.log(hosturl);
-  var utils=require('../bkc_utils');
-  var web3=utils.quickWeb3(hosturl);
- var account= await utils.quickAccount(hosturl)
-    var genesysAccount=account.personal;
-    var deployer=new utils.contractDeployer(hosturl,genesysAccount);
-    var RC=await deployer.RC_deploy()
-      global.RC= RC;
+//   console.log(hosturl);
+//   var utils=require('../bkc_utils');
+//   var web3=utils.quickWeb3(hosturl);
+//  var account= await utils.quickAccount(hosturl)
+//     var genesysAccount=account.personal;
+//     var deployer=new utils.contractDeployer(hosturl,genesysAccount);
+//     var RC=await deployer.RC_deploy()
+//       global.RC= RC;
   
       
-}
+// }
 
