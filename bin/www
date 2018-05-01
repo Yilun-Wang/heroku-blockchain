@@ -11,22 +11,25 @@
 var app = require('../app');
 var debug = require('debug')('demo:server');
 var http = require('http');
-var hosturl="http://localhost:7545";
-// var hosturl="https://fathomless-depths-36951.herokuapp.com/";
+var global=require('../global');
 
-/**
- * Get port from environment and store in Express.
- */
-
-var port = normalizePort(process.env.PORT || '3000');
-
-app.set('port', port);
-
+global.hosturl="https://fathomless-depths-36951.herokuapp.com/";
+// global.hosturl="http://localhost:7545";
 /**
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
+/**
+ * Get port from environment and store in Express.
+ */
+
+
+var port = normalizePort(process.env.PORT || '3000');
+
+app.set('port', port);
+
+
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -35,7 +38,8 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-deployRC(hosturl,app);
+console.log('init done');
+
 /**
  * Normalize a port into a number, string, or false.
  */
@@ -95,20 +99,19 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
-function deployRC(hosturl,app){
 
 
-  var utils=require('../bkc_utils');
-  var web3=utils.quickWeb3(hosturl);
-  web3.eth.personal.newAccount("genesys").then(async function(genesysAccount){
+// async function deployRC(hosturl){
 
-  let unlock;
-  try{
-    unlock=await web3.eth.personal.unlockAccount(genesysAccount,"genesys");}catch(e){console.log(e);}
-    
-    var deployer=new utils.contractDeployer(hosturl,genesysAccount);
-    app.locals.RC=deployer.RC_deploy();
+//   console.log(hosturl);
+//   var utils=require('../bkc_utils');
+//   var web3=utils.quickWeb3(hosturl);
+//  var account= await utils.quickAccount(hosturl)
+//     var genesysAccount=account.personal;
+//     var deployer=new utils.contractDeployer(hosturl,genesysAccount);
+//     var RC=await deployer.RC_deploy()
+//       global.RC= RC;
+  
       
-      // console.log(app.locals.RC);
-});
-}
+// }
+

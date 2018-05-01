@@ -1,6 +1,6 @@
 
 var utils=require('../../bkc_utils');
-
+var global=require('../../global');
 /*Gate keeper listens on internet and blockchain events, handles data query and new data sync on blockchain, on behalf of
 MedDevice. It is the internet and blockchain proxy of MedDevice.*/
 DbGatekeeper=function(hosturl,providerId,RC){
@@ -10,8 +10,8 @@ DbGatekeeper=function(hosturl,providerId,RC){
     this.PPR_List=[];
     this.keeperAccount;
     this.keeperPersonal;
-    this.hosturl=hosturl;
-    this.providerId=providerId;
+    this.hosturl=hosturl.toString();
+    this.providerId=providerId.toString();
     this.initialized=false;
     
 
@@ -29,7 +29,8 @@ DbGatekeeper=function(hosturl,providerId,RC){
         //go to RC and retrieve the profile.
         if(!this.initialized)
             {
-                console.log("Keeper not initialized, please await init() first");
+                // console.log("Keeper not initialized, please await init() first");
+                global.log("Keeper not initialized, please await init() first");
                 return;}
 
         var paddress=await RC.methods.getEthAddr(patientID).call({from:this.keeperPersonal,gasPrice:'0'});
@@ -49,7 +50,8 @@ DbGatekeeper=function(hosturl,providerId,RC){
             return true;
         else{
             
-            console.log("!!!!Signature verfication fails!!!! recover address:",recover,"actual address:",ethAddress);
+            // console.log("!!!!Signature verfication fails!!!! recover address:",recover,"actual address:",ethAddress);
+            global.log("!!!!Signature verfication fails!!!! recover address:",recover,"actual address:",ethAddress);
             return false;
         }
     }
@@ -57,7 +59,8 @@ DbGatekeeper=function(hosturl,providerId,RC){
     this.verifyPermission=async function(querorID,queryObject){
         if(!this.initialized)
             {
-                console.log("Keeper not initialized, please await init() first");
+                // console.log("Keeper not initialized, please await init() first");
+                global.log("Keeper not initialized, please await init() first");
                 return;}
 
         var owner=await this.getPatientProfile(queryObject.ownerID);
@@ -70,7 +73,8 @@ DbGatekeeper=function(hosturl,providerId,RC){
         var status=await SC.methods.getStatus(pprAddr).call({from:this.keeperPersonal,gasPrice:'0'});
         if(status==0)
             {
-                console.log("Provider '"+this.providerId+"' is not serving "+queryObject.ownerID);
+                // console.log("Provider '"+this.providerId+"' is not serving "+queryObject.ownerID);
+                global.log("Provider '"+this.providerId+"' is not serving "+queryObject.ownerID);
                 return false;
             }
         
@@ -79,11 +83,13 @@ DbGatekeeper=function(hosturl,providerId,RC){
     
         if(permission==1)
            {
-               console.log("This is a public data.");
+               // console.log("This is a public data.");
+               global.log("This is a public data.");
                 return true;//i.e., the record is public, the permission is granted.
            }
         else if(permission==0)
-            {   console.log("This is a piece of private data");
+            // {   console.log("This is a piece of private data");
+        {global.log("This is a piece of private data");
                 return querorID==queryObject.ownerID;
             } //i.e., the record is private, the permission is only granted to owner herself.
         
@@ -96,7 +102,8 @@ DbGatekeeper=function(hosturl,providerId,RC){
     this.handleQuery=async function(querorID,query_object,signed_query_object){
         if(!this.initialized)
             {
-                console.log("Keeper not initialized, please await init() first");
+                // console.log("Keeper not initialized, please await init() first");
+                global.log("Keeper not initialized, please await init() first");
                 return;
             }
 
@@ -106,17 +113,20 @@ DbGatekeeper=function(hosturl,providerId,RC){
         
         if(verify==false)
             {
-                console.log("Queror ID does not match signature.");
+                // console.log("Queror ID does not match signature.");
+                global.log("Queror ID does not match signature.");
                 return false;
             }
         verify=await this.verifyPermission(querorID,query_object);
 
         if(verify==false)
         {
-            console.log("Patient does not have the permission with this query.");
+            // console.log("Patient does not have the permission with this query.");
+            global.log("Patient does not have the permission with this query.");
             return false;
         }
-        console.log("Permission confirmed.");
+        // console.log("Permission confirmed.");
+        global.log("Permission confirmed.");
         return true;
     }  
     this.submitDataHash=async function(patientID,dataIndex,data){
@@ -134,7 +144,8 @@ DbGatekeeper=function(hosturl,providerId,RC){
         if(status==0)
             {
                 /*The PPR does not exists yet, create a new one. */
-                console.log("Creating new PPR for provider '"+this.providerId+"' and patient '"+patientID+"'");
+                // console.log("Creating new PPR for provider '"+this.providerId+"' and patient '"+patientID+"'");
+                global.log("Creating new PPR for provider '"+this.providerId+"' and patient '"+patientID+"'");
                 deployer=new utils.contractDeployer(hosturl,this.keeperPersonal);
                 PPR=await deployer.PPR_deploy(patientID,this.providerId);
                 
@@ -169,8 +180,8 @@ PatientGatekeeper=function(hosturl,patientID,RC){
     this.PPR_List=[];
     this.keeperAccount;
     this.keeperPersonal;
-    this.hosturl=hosturl;
-    this.patientID=patientID;
+    this.hosturl=hosturl.toString();
+    this.patientID=patientID.toString();
     this.initialized=false;
     this.SC;
     
@@ -195,7 +206,8 @@ PatientGatekeeper=function(hosturl,patientID,RC){
     this.queryTemplate=async function(dbGateKeeper,ownerID,queryIndex){
         if(!this.initialized)
             {
-                console.log("Keeper not initialized, please await init() first");
+                // console.log("Keeper not initialized, please await init() first");
+                global.log("Keeper not initialized, please await init() first");
                 return;
             }
         /*Prepare query object*/
@@ -205,7 +217,8 @@ PatientGatekeeper=function(hosturl,patientID,RC){
         /*Communicate with dbKeeper*/
         if(dbGateKeeper==undefined)
             {
-                console.log("db Gate keeper is not defined.");
+                // console.log("db Gate keeper is not defined.");
+                global.log("db Gate keeper is not defined.");
                 return;
             }
 

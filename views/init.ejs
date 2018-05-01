@@ -1,0 +1,24 @@
+<!DOCTYPE objects.html>
+<html>
+
+<head>
+    <title>Initializing...</title>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel='stylesheet' href='/assets/css/main.css' />
+</head>
+
+<body class="w3-light-grey">
+    <img src='http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0-50.gif' id='initting'/>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $.get('/prototype/init',function(data,status){
+            var url = "/prototype";
+            $( location ).attr("href", url);
+        });
+    });
+    </script>
+
+</body>
+
+</html>

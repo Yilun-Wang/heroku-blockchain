@@ -1,0 +1,82 @@
+<!DOCTYPE objects.html>
+<html>
+
+<head>
+    <title>Prototype2</title>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel='stylesheet' href='/assets/css/main.css' />
+</head>
+
+<body class="w3-light-grey">
+    <h1>This webpage will show the interaction between Patient and MedDevices</h1>
+
+    <!-- These three should be displayed in coloumns -->
+
+    <style>
+        #deviceView {
+            /* max-width: 200px; */
+            float: left;
+            text-align: center;
+        }
+
+        #eventLog {
+            float: right;
+
+            /* padding-left: 10%; */
+            /* max-width: 200px; */
+        }
+
+        #userView {
+            /* max-width: 200px; */
+            float: left;
+            padding-left: 12.5%;
+            text-align: center;
+        }
+    </style>
+
+
+    <div id='deviceView'>
+        <%- include device.ejs %>
+    </div>
+
+
+
+    <div id='eventLog'>
+        <%- include eventLog.ejs %>
+    </div>
+
+
+
+    <div id='userView'>
+        <%- include user.ejs %>
+    </div>
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $("#loadingMyData").hide();
+        $('#decryptBtn').click(function () {
+            $.post("/prototype/decryptRSA", { cipher: $("#userText").text() }, function (data, status) {
+
+                $('#userText').text(data);
+
+            });
+        });
+
+        $('#viewDataBtn').click(function () {
+            $("#loadingMyData").show();
+             console.log('haha');
+        });
+
+
+        $('#submitting').hide();
+        $('#submitDataBtn').click(function () {
+            $('#submitting').show();
+            console.log('you');
+        });
+});
+    </script>
+
+</body>
+
+</html>

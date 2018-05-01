@@ -1,5 +1,5 @@
 
-
+var global=require('./global');
 
 
 
@@ -74,7 +74,8 @@ parameters used in the constructor of contracts.*/
     }
     
        this.RC_deploy=async function(){
-           console.log("Deploying an RC");
+        //    console.log("Deploying an RC");
+        global.log("Deploying an RC");
            let result;
             try{
             result=await this.deploy_template("RC");}catch(e){console.log(e);}
@@ -82,7 +83,8 @@ parameters used in the constructor of contracts.*/
            
     }
         this.PPR_deploy=async function(patientID,providerID){
-            console.log("Deploying an PPR");
+            // console.log("Deploying an PPR");
+            global.log('"Deploying an PPR"');
             let result;
             try{
             result=await this.deploy_template("PPR",patientID.toString(),providerID.toString());}catch(e){console.log(e);}
@@ -90,7 +92,8 @@ parameters used in the constructor of contracts.*/
         
     }
         this.SC_deploy=async function(RegistrarID,RegistrarEthAddr){
-            console.log("Deploying an SC");
+            // console.log("Deploying an SC");
+            global.log("Deploying an SC");
             let result;
             try{
             result=await this.deploy_template("SC",RegistrarID.toString(),RegistrarEthAddr);}catch(e){console.log(e);}
@@ -104,7 +107,8 @@ parameters used in the constructor of contracts.*/
                 case "RC": format_src='./build/contracts/RC.json'; break;
                 case "PPR": format_src='./build/contracts/PPR.json'; break;
                 case "SC": format_src='./build/contracts/SC.json'; break;
-                default: console.log('Unknown contract type.'); return undefined;
+                // default: console.log('Unknown contract type.'); return undefined;
+                default: global.log('Unknown contract type.'); return undefined;
             }
     
             var contract_format=require(format_src);
@@ -135,7 +139,8 @@ parameters used in the constructor of contracts.*/
                 data:contract_generator.format.bytecode,
                 arguments:[param1,param2]
             }).send({gas:gasEstimate,gasPrice:'0',from:this.senderAddr});}catch(e){console.log("err",e);}
-           console.log("Deployment complete");
+        //    console.log("Deployment complete");
+            global.log("Deployment complete");
             return contract_instance;
         }
         
@@ -162,7 +167,8 @@ parameters used in the constructor of contracts.*/
         try{
         unlock=await web3.eth.personal.unlockAccount(personal,account.privateKey);
         if(unlock==true)
-            console.log("New eth account unlocked.");
+            // console.log("New eth account unlocked.");
+            global.log("New eth account unlocked.");
         }catch(e){console.log(e)};
 
         return {account:account,personal:personal};

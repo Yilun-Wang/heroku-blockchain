@@ -4,30 +4,47 @@ var pGateKeeper=require('./gateKeepers').PatientGatekeeper;
 var Device=require('./objects').medicalDevice;
 var dbGateKeeper=require('./gateKeepers').DbGatekeeper;
 
+var global=require('../../global');
+
 patientNode=function(id,name,hosturl,RC){
     
-    this.patient=new Patient(id,name);
+    this.patient=new Patient(id.toString(),name.toString());
         
     this.gateKeeper;
-    
+    this.hosturl=hosturl;
+    this.RC=RC;
     this.init=async function(){
         
-        if(id!=undefined&&hosturl!=undefined&&RC!=undefined)
+        if(id!=undefined&&this.hosturl!=undefined&&this.RC!=undefined)
             {
                 this.gateKeeper=new pGateKeeper(hosturl,id,RC);
                 await this.gateKeeper.init();
             }
+            else{
+                //console.log('Information needed for initialization');
+                global.log('Information needed for initialization');
+                if(id==undefined)
+                    //console.log('please provide id');
+                global.log('please provide id');
+                if(hosturl==undefined)
+                    //console.log('please provide hosturl');
+                global.log('please provide hosturl');
+                if(RC==undefined)
+                    //console.log('please provide RC');
+            globalconsole.log('please provide RC');
     }
+}
 
-    this.query=async function(deviceNode,queryIndex,ownerID=this.patient.patientID){
+    this.query=async function(deviceNode,queryIndex=undefined,ownerID=this.patient.patientID){
         if(this.gateKeeper==undefined)
             {
-                console.log('gate keeper is not initialized, please await init.');
-                return;
+                //console.log('gate keeper is not initialized, initializing.');
+                global.log('gate keeper is not initialized, initializing.');
+                 this.init();
             }
         var query=await this.gateKeeper.queryTemplate(deviceNode.gateKeeper,ownerID,queryIndex);
-        // console.log(query);
-        var result=await deviceNode.handleQuery(this.patient.patientID,query.queryObject,query.signature);
+       
+        result=await deviceNode.handleQuery(this.patient.patientID,query.queryObject,query.signature);
         return result;
     }
     
@@ -37,30 +54,55 @@ patientNode=function(id,name,hosturl,RC){
     }
 }
 deviceNode=function(_deviceId,_deviceName,hosturl,RC){
-    this.device=new Device(_deviceId,_deviceName);
+    this.device=new Device(_deviceId.toString(),_deviceName.toString());
     this.gateKeeper;
+    this.hosturl=hosturl;
+    this.RC=RC;
 
     this.init=async function(){
-        if(_deviceId!=undefined&&hosturl!=undefined&&RC!=undefined)
-                {
-                    this.gateKeeper=new dbGateKeeper(hosturl,_deviceId,RC);
+        
+        if(_deviceId!=undefined&&this.hosturl!=undefined&&this.RC!=undefined)
+        {
+                    this.gateKeeper=new dbGateKeeper(hosturl.toString(),_deviceId.toString(),RC);
                     await this.gateKeeper.init();
                 }
+            else{
+                //console.log('Information needed for initialization');
+                global.log('Information needed for initialization');
+                if(_deviceId==undefined)
+                    //console.log('please provide id');
+                global.log('please provide id');
+                if(hosturl==undefined)
+                    //console.log('please provide hosturl');
+                global.log('please provide hosturl');
+                if(RC==undefined)
+                    //console.log('please provide RC');
+                global.log('please provide RC');
     }
+}
     this.generateDataFor=function(patientNode){
+        
         var data="Heart Rate:"+(30+Math.floor(Math.random()*60));
+        this.generateDataFor(patientNode,data);
+    }
+    this.generateDataFor=function(patientNode,data){
         this.device.generateData(data,patientNode.patient.publicKey);
     }
     
     this.handleQuery=async function(querorID,query_object,signed_query_object){
         if(this.gateKeeper==undefined)
             {
-                console.log("dbGateKeeper is not initialized yet.");
-                return;
+                global.log("dbGateKeeper is not initialized yet.");
+                 this.init();
             }
-            // console.log(querorID,query_object,signed_query_object);
-        var permit=await this.gateKeeper.handleQuery(querorID,query_object,signed_query_object);
-            // var permit;
+        
+        /*If the index is not specified, simply return the latest measurement outcome.*/
+        if(query_object.queryIndex==undefined)
+            query_object.queryIndex=this.device.dataLog.length-1;
+
+            
+         permit=await this.gateKeeper.handleQuery(querorID,query_object,signed_query_object);
+        
         if(permit==true)
             return this.device.handleQuery(query_object.queryIndex);
         else{
@@ -69,6 +111,8 @@ deviceNode=function(_deviceId,_deviceName,hosturl,RC){
     }
 
     this.submitDataLogFor = async function(patientNode) {
+        if(this.gateKeeper==undefined)
+            await this.init();
         for (var i = this.device.submitCount; i < this.device.dataLog.length; i++) {
              // submit hash(this.device.dataLog[i]) to smart contract
             await this.gateKeeper.submitDataHash(patientNode.patient.patientID,i,this.device.dataLog[i]);
