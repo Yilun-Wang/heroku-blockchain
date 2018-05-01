@@ -9,14 +9,24 @@
 </head>
 
 <body class="w3-light-grey">
-    <img src='http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0-50.gif' id='initting'/>
+    <img src='http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0-50.gif' id='initting' />
+<table>
+    <%for(var i=log.length-1;i>=0;i--){%>
+        <tr>
+            <td><%=log[i]%></td>
+        </tr>
+    <%}%>
+</table>
     <script type="text/javascript">
-    $(document).ready(function(){
-        $.get('/prototype/init',function(data,status){
-            var url = "/prototype";
-            $( location ).attr("href", url);
+        $(document).ready(function () {
+            /*Call init router to update the event log*/
+            $.get('/prototype/init', function (data, status) {
+                    var url = "/prototype/init";
+                    $(location).attr("href", url);
+                }
+            );
+
         });
-    });
     </script>
 
 </body>

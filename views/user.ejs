@@ -1,5 +1,17 @@
 <h2>User View</h2>
 
+
+<form id="genData" method="get"  action="/prototype/genData">
+
+  <select name="device">
+    <option value="1" selected> Blood Pressure Meter </option>
+    <option value="2"> Weight Scale </option>
+  </select>
+    <button id="createDataBtn">Click to Do Measurement</button>
+
+</form>
+
+
 <form id="userView" method="get" action="/prototype/userView">
   <select name="device" id='device'>
     <option value="1" selected> Blood Pressure Meter </option>
@@ -13,6 +25,5 @@
 <br>
 <br>
 <h2>User Text</h2>
-<textarea readonly='readonly' style="min-height: 150px" id='userText'><%=userText%></textarea>
-
+<p id='userText'><%=userText%></p>
 <button id='decryptBtn'>Decrypt</button>

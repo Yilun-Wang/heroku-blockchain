@@ -100,18 +100,3 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-
-// async function deployRC(hosturl){
-
-//   console.log(hosturl);
-//   var utils=require('../bkc_utils');
-//   var web3=utils.quickWeb3(hosturl);
-//  var account= await utils.quickAccount(hosturl)
-//     var genesysAccount=account.personal;
-//     var deployer=new utils.contractDeployer(hosturl,genesysAccount);
-//     var RC=await deployer.RC_deploy()
-//       global.RC= RC;
-  
-      
-// }
-

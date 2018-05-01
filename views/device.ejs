@@ -1,16 +1,40 @@
 
 <h2>MedDevices</h2>
 
-<form id="genData" method="get"  action="/prototype/genData">
+<select name="device" id="dataLogSelect">
+  <option value="1" selected> Blood Pressure Meter </option>
+  <option value="2"> Weight Scale </option>
+</select>
+<button id="viewDataLog">Click to View Data Log</button>
+<button id="hideDataLog">Click to Hide Data Log</button>
 
-  <select name="device">
-    <option value="1" selected> Blood Pressure Meter </option>
-    <option value="2"> Weight Scale </option>
-  </select>
-    <button id="createDataBtn">Click to Create Data</button>
+<div style="max-width: 300px;overflow: auto;">
+<table id = 'dataLog_1' >
+  
+  <%for(var i=dataLog[0].length-1;i>=0;i--){%>
+    <tr>
+        <td><%=dataLog[0][i]%></td>
+    </tr>
+  <%}%>
 
-</form>
+</table>
+</div>
 
+<div style="max-width: 300px;overflow: auto;">
+  <table id = 'dataLog_2' >
+    
+    <%for(var i=dataLog[1].length-1;i>=0;i--){%>
+      <tr>
+          <td><%=dataLog[1][i]%></td>
+      </tr>
+    <%}%>
+  
+  </table>
+  </div>
+  
+
+<br>
+<br>
 <form id="submitDataLog" method="get"  action="/prototype/submitDataLog">
 
   <select name="device">
@@ -21,24 +45,24 @@
     <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='submitting'/ >
 </form>
 
+<script>
+  $('#dataLog_1').hide();
+  $('#dataLog_2').hide();
+  $('#hideDataLog').hide();
+  $('#viewDataLog').click(function(){
+    var select=$('#dataLogSelect').val();
+    $('#dataLog_'+select).show();
 
-<!-- <script type="text/javascript">
-  $("#loadingMyData").hide();
- $('#decryptBtn').click(function(){
-    $.post("/prototype/decryptRSA",{cipher:$("#userText").text()},function(data,status){
-      
-      $('#userText').text(data);
-      
-    });
+    $('#hideDataLog').show();
+    $('#viewDataLog').hide();
   });
+
+  $('#hideDataLog').click(function(){
+    $('#dataLog_1').hide();
+    $('#dataLog_2').hide();
   
-  $('#viewDataBtn').click(function(){
-    
-    $("#loadingMyData").show();
-    // $.get("/prototype/userView",{device:$('#device').val()},function(data,status){
-    //   $("#loadingMyData").hide();
-    //     // $('#userText').text(data);
-        
-    //   });
-  }); -->
+    $('#hideDataLog').hide();
+    $('#viewDataLog').show();
+  });
 </script>
+

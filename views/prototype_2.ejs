@@ -10,7 +10,9 @@
 
 <body class="w3-light-grey">
     <h1>This webpage will show the interaction between Patient and MedDevices</h1>
-
+    <button id='re-init'>Click to Re-initialize</button>
+    <br>
+    <br>
     <!-- These three should be displayed in coloumns -->
 
     <style>
@@ -22,17 +24,31 @@
 
         #eventLog {
             float: right;
-
+            text-align: center;
+            padding-right: 10%;
             /* padding-left: 10%; */
             /* max-width: 200px; */
         }
 
         #userView {
-            /* max-width: 200px; */
+            /* max-width: 300px; */
             float: left;
             padding-left: 12.5%;
             text-align: center;
+            /* overflow: auto; */
+
         }
+        p {
+            text-align: center;
+            overflow: auto;
+            max-width: 200px;
+        }
+        
+        /* th,td{
+            text-align: center;
+            overflow:hidden;
+            max-width: 200px;
+        } */
     </style>
 
 
@@ -54,6 +70,17 @@
 
     <script type="text/javascript">
     $(document).ready(function(){
+
+
+        $.get('/prototype/log', function (data, status) {
+                    var url = "/prototype/log";
+                    $(location).attr("href", url);
+                }
+            );
+        $('#re-init').click(function(){
+            var url = "/prototype/re-init";
+            $(location).attr("href", url);
+        });
         $("#loadingMyData").hide();
         $('#decryptBtn').click(function () {
             $.post("/prototype/decryptRSA", { cipher: $("#userText").text() }, function (data, status) {
@@ -74,6 +101,7 @@
             $('#submitting').show();
             console.log('you');
         });
+
 });
     </script>
 

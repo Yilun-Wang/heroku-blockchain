@@ -40,24 +40,24 @@ async function initObjects() {
     // console.log('Global RC',global.RC);
     await deployRC(global.hosturl);
 
-        deviceNode1 = new deviceNode('101', "Blood Pressure Meter", global.hosturl, global.RC);
-        deviceNode2 = new deviceNode('102', "Weight Scale", global.hosturl, global.RC);
+    deviceNode1 = new deviceNode('101', "Blood Pressure Meter", global.hosturl, global.RC);
+    deviceNode2 = new deviceNode('102', "Weight Scale", global.hosturl, global.RC);
 
-        device1 = deviceNode1.device;
-        device2 = deviceNode2.device;
-        deviceList = [device1, device2];
-        deviceNodeList = [deviceNode1, deviceNode2];
+    device1 = deviceNode1.device;
+    device2 = deviceNode2.device;
+    deviceList = [device1, device2];
+    deviceNodeList = [deviceNode1, deviceNode2];
 
-        the_patientNode = new patientNode('2000', 'Alice', global.hosturl, global.RC);
-        the_patient = the_patientNode.patient;
+    the_patientNode = new patientNode('2000', 'Alice', global.hosturl, global.RC);
+    the_patient = the_patientNode.patient;
 
-        deviceNode1.init().then(function () {
+    deviceNode1.init().then(function () {
         deviceNode2.init()
     });
-        await the_patientNode.init();
+    await the_patientNode.init();
 
-        log("Key Pair Generated.");
-        log("Initialization completed.");
+    log("Key Pair Generated.");
+    log("Initialization completed.");
     // log("Public Key: " + the_patient.publicKey);
 
 
@@ -70,77 +70,103 @@ function flushLog() {
 }
 router.get('/', function (req, res, next) {
     if (!init) {
-        res.render('init');
-        }
-    else{
-    res.render("prototype_2",
-    {
-        patient: the_patient,
-        middleText: global.getLog(),
-        userText: userText
-    });
-}
+        flushLog();
+        res.render('init', { log: global.getLog() });
+        initObjects().then(function () {
+            init = true;
+            flushLog();
+        });
+    }
+    else {
+
+        res.render("prototype_2",
+            {
+                dataLog: [device1.dataLog, device2.dataLog],
+                patient: the_patient,
+                middleText: global.getLog(),
+                userText: userText
+            });
+    }
 });
 
-router.get('/init',function(req,res,next){
+router.get('/log', function (req, res, next) {
+
     
-    init = true;
-    initObjects().then(function () {
+    global.logListener.once('log', function () {
+            // console.log('logging!!!!!!!!!!!!!!!!!!!!!!!!!1');
+            res.redirect('/prototype');
+        
+    });
+});
+    router.get('/re-init', function (req, res, next) {
+        init = false;
         res.redirect('/prototype');
     });
+    router.get('/init', function (req, res, next) {
+        if (init)
+            res.redirect('/prototype');
+        else {
+            
+            global.logListener.once('log', function () {
+                                   
+                    res.render('init', { log: global.getLog() });
 
-});
+                
+            });
+        }
 
-router.get('/genData', function (req, res, next) {
+    });
 
-    log("genData");
-    if (parseInt(req.query.device) == 1) {
-        deviceNode1.generateDataFor(the_patientNode, "Blood Pressure: systolic " + (90 + 30 * Math.random()) + " mmHg, diastolic " + (60 + 30 * Math.random()) + " mmHg.");
-    } else {
-        deviceNode2.generateDataFor(the_patientNode, "Weight: " + (50 + 5 * Math.random()) + " kg.");
-    }
-    log("Data generated.");
-    res.redirect("/prototype");
-});
+    router.get('/genData', function (req, res, next) {
 
-router.get('/submitDataLog', function (req, res, next) {
-
-    log("submitDataLog");
-    var i = parseInt(req.query.device);
-    log("Submitting from Device " + i);
-    deviceNodeList[i - 1].submitDataLogFor(the_patientNode).then(function () {
-
-        log(deviceNodeList[i - 1].device.deviceName + " summited its data.");
+        log("genData");
+        if (parseInt(req.query.device) == 1) {
+            deviceNode1.generateDataFor(the_patientNode, "Blood Pressure: systolic " + (90 + 30 * Math.random()) + " mmHg, diastolic " + (60 + 30 * Math.random()) + " mmHg.");
+        } else {
+            deviceNode2.generateDataFor(the_patientNode, "Weight: " + (50 + 5 * Math.random()) + " kg.");
+        }
+        log("Data generated.");
         res.redirect("/prototype");
-    }
-    );
-});
-
-router.get('/userView', function (req, res, next) {
-
-
-    log(req.query);
-    var i = parseInt(req.query.device);
-    log("Querying Device " + i);
-
-    the_patientNode.query(deviceNodeList[i - 1]).then(function (result) {
-
-        userText = result;
-        // res.send(userText);
-        res.redirect('/prototype');
     });
-});
 
-router.post('/decryptRSA', function (req, res, next) {
+    router.get('/submitDataLog', function (req, res, next) {
 
-    var plaintext = the_patient.decrypt(req.body.cipher);
+        log("submitDataLog");
+        var i = parseInt(req.query.device);
+        log("Submitting from Device " + i);
+        deviceNodeList[i - 1].submitDataLogFor(the_patientNode).then(function () {
 
-    userText = plaintext;
+            log(deviceNodeList[i - 1].device.deviceName + " summited its data.");
+            res.redirect("/prototype");
+        }
+        );
+    });
 
-    res.send(userText);
-
-});
+    router.get('/userView', function (req, res, next) {
 
 
+        log(req.query);
+        var i = parseInt(req.query.device);
+        log("Querying Device " + i);
 
-module.exports = router;
+        the_patientNode.query(deviceNodeList[i - 1]).then(function (result) {
+
+            userText = result;
+            // res.send(userText);
+            res.redirect('/prototype');
+        });
+    });
+
+    router.post('/decryptRSA', function (req, res, next) {
+
+        var plaintext = the_patient.decrypt(req.body.cipher);
+
+        userText = plaintext;
+
+        res.send(userText);
+
+    });
+
+
+
+    module.exports = router;
