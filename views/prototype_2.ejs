@@ -53,6 +53,7 @@
     </div>
 
     <script type="text/javascript">
+    $(document).ready(function(){
         $("#loadingMyData").hide();
         $('#decryptBtn').click(function () {
             $.post("/prototype/decryptRSA", { cipher: $("#userText").text() }, function (data, status) {
@@ -73,7 +74,7 @@
             $('#submitting').show();
             console.log('you');
         });
-
+});
     </script>
 
 </body>

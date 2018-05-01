@@ -35,10 +35,10 @@ async function deployRC(hosturl) {
 
 }
 
-function initObjects() {
+async function initObjects() {
 
     // console.log('Global RC',global.RC);
-    deployRC(global.hosturl).then(function () {
+    await deployRC(global.hosturl);
 
         deviceNode1 = new deviceNode('101', "Blood Pressure Meter", global.hosturl, global.RC);
         deviceNode2 = new deviceNode('102', "Weight Scale", global.hosturl, global.RC);
@@ -52,59 +52,62 @@ function initObjects() {
         the_patient = the_patientNode.patient;
 
         deviceNode1.init().then(function () {
-            deviceNode2.init().then(function () {
-                the_patientNode.init().then(function () {
-
-                    log("Key Pair Generated.");
-
-                    // log("Public Key: " + the_patient.publicKey);
-
-                });
-            });
-        });
+        deviceNode2.init()
     });
+        await the_patientNode.init();
+
+        log("Key Pair Generated.");
+        log("Initialization completed.");
+    // log("Public Key: " + the_patient.publicKey);
+
 
 }
 function log(message) {
     global.log(message);
 }
 function flushLog() {
-    middleText = [];
+    global.flushLog();
 }
 router.get('/', function (req, res, next) {
     if (!init) {
-        init = true;
-        initObjects();
-    }
-
+        res.render('init');
+        }
+    else{
     res.render("prototype_2",
-        {
-            patient: patientNode.patient,
-            middleText: global.getLog(),
-            userText: userText
-        });
+    {
+        patient: the_patient,
+        middleText: global.getLog(),
+        userText: userText
+    });
+}
+});
 
-
+router.get('/init',function(req,res,next){
+    
+    init = true;
+    initObjects().then(function () {
+        res.redirect('/prototype');
+    });
 
 });
 
 router.get('/genData', function (req, res, next) {
 
-    console.log("genData");
+    log("genData");
     if (parseInt(req.query.device) == 1) {
         deviceNode1.generateDataFor(the_patientNode, "Blood Pressure: systolic " + (90 + 30 * Math.random()) + " mmHg, diastolic " + (60 + 30 * Math.random()) + " mmHg.");
     } else {
         deviceNode2.generateDataFor(the_patientNode, "Weight: " + (50 + 5 * Math.random()) + " kg.");
     }
-    global.log("Data generated.");
+    log("Data generated.");
     res.redirect("/prototype");
 });
 
 router.get('/submitDataLog', function (req, res, next) {
 
-    global.log("submitDataLog");
+    log("submitDataLog");
     var i = parseInt(req.query.device);
-    global.log(i);
+    log("Submitting from Device " + i);
     deviceNodeList[i - 1].submitDataLogFor(the_patientNode).then(function () {
 
         log(deviceNodeList[i - 1].device.deviceName + " summited its data.");
@@ -116,9 +119,9 @@ router.get('/submitDataLog', function (req, res, next) {
 router.get('/userView', function (req, res, next) {
 
 
-    global.log(req.query);
+    log(req.query);
     var i = parseInt(req.query.device);
-    global.log("Querying Device "+i);
+    log("Querying Device " + i);
 
     the_patientNode.query(deviceNodeList[i - 1]).then(function (result) {
 
