@@ -34,12 +34,18 @@
         <%- include device.ejs %>
     </div>
 
-    <div class="w3-col m4 l4 w3-panel" id='eventLog'>
+    <div class="w3-col m3 l3 w3-panel" id='eventLog'>
         <%- include eventLog.ejs %>
     </div>
 
-    <div class="w3-col m3 l3 w3-panel" id='userView'>
-        <%- include user.ejs %>
+    <div class="w3-col m4 l4 w3-panel" id='userView'>
+        <div class="w3-display-container">
+            <img src="/images/phone-frame.png">
+            <div class="w3-display-middle w3-cell-colomn" style="width:236px;">
+                <%- include user.ejs %>
+            </div>
+            <div class="w3-display-middle"><img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='loadingMyData'/ ></div>
+        </div>
     </div>
 
 </div>
@@ -49,22 +55,18 @@
     $(document).ready(function(){
 
         $('#submitting').hide();
-        $('#submitDataBtn').click(function () {
+        /*$('#submitDataBtn').click(function () {
             $('#submitting').show();
-            console.log('you');
-        });
+            //console.log('you');
+        });*/
 
         $("#loadingMyData").hide();
-        $('#decryptBtn').click(function () {
-            $.post("/prototype/decryptRSA", { cipher: $("#userText").text() }, function (data, status) {
-                $('#userText').text(data);
-            });
-        });
+        
 
-        $('#viewDataBtn').click(function () {
+        /*$('#viewDataBtn').click(function () {
             $("#loadingMyData").show();
              console.log('haha');
-        });
+        });*/
 });
     </script>
 

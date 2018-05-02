@@ -7,6 +7,7 @@
       <img src="/images/device-bloodPressure.jpg" alt="device-bloodPressure" width="200" height="200">
     </div><br>
     <h5>Blood Pressure Meter</h5>
+    <h5>Number of pending data: <%=pendingCnt[0]%></h5>
     <button id="d1btn"> + </button>
   </div>
 
@@ -15,6 +16,7 @@
       <img src="/images/device-weightScale.jpg" alt="device-weightScale" width="200" height="200">
     </div><br>
     <h5>Weight Scale</h5>
+    <h5>Number of pending data: <%=pendingCnt[1]%></h5>
     <button id="d2btn"> + </button>
   </div>
 
@@ -25,25 +27,29 @@
 <script type="text/javascript">
       $('#device-bloodPressure').click(function () {
           $.get("/prototype/genData", { device:1 }, function(data, status){
-              alert("Data: " + data + "\nStatus: " + status);
+            alert("Data: " + data + "\nStatus: " + status);
+            location.reload();
           });
-          location.reload();
       });
       $('#d1btn').click(function () {
             $('#submitting').show();
-          $.get("/prototype/submitDataLog", { device:1 });
-          location.reload();
+          $.get("/prototype/submitDataLog", { device:1 }, function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+            location.reload();
+          });
       });
       $('#device-weightScale').click(function () {
           $.get("/prototype/genData", { device:2 }, function(data, status){
-              alert("Data: " + data + "\nStatus: " + status);
+            alert("Data: " + data + "\nStatus: " + status);
+            location.reload();
           });
-          location.reload();
       });
       $('#d2btn').click(function () {
             $('#submitting').show();
-          $.get("/prototype/submitDataLog", { device:2 });
-          location.reload();
+          $.get("/prototype/submitDataLog", { device:2 }, function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+            location.reload();
+          });
       });
 </script>
 

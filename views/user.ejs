@@ -1,6 +1,6 @@
 
-<h2>User View</h2>
 
+<!-- 
 <form id="userView" method="get" action="/prototype/userView">
   <select name="device" id='device'>
     <option value="1" selected> Blood Pressure Meter </option>
@@ -9,10 +9,35 @@
   
   <button id="viewDataBtn"> View My Latest Data </button><img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='loadingMyData'/ >
 
-</form>
+</form>-->
 
-<h2>User Text</h2>
-<textarea readonly='readonly' style="min-height: 150px" id='userText'><%=userText%></textarea>
+<div class="w3-bar w3-cell" style="width:236px">
+  <button class="w3-bar-item w3-indigo" id="viewDataBtn1">View BP</button>
+  <button class="w3-bar-item w3-indigo" id="viewDataBtn2">View Weight</button>
+</div>
 
-<button id='decryptBtn'>Decrypt</button>
+<textarea class="w3-light-gray w3-card-4 w3-cell" readonly='readonly' style="min-height: 320px" id='userText'><%=userText%></textarea>
 
+<button class="w3-cell w3-ripple  w3-grey" id='decryptBtn' style="width:236px">Decrypt</button>
+
+
+<script type="text/javascript">
+      $('#viewDataBtn1').click(function () {
+            $('#loadingMyData').show();
+          $.get("/prototype/userView", { device:1 }, function(data, status){
+            location.reload();
+          });
+      });
+      $('#viewDataBtn2').click(function () {
+            $('#loadingMyData').show();
+          $.get("/prototype/userView", { device:2 }, function(data, status){
+            location.reload();
+          });
+      });
+
+      $('#decryptBtn').click(function () {
+            $.post("/prototype/decryptRSA", { cipher: $("#userText").text() }, function (data, status) {
+                $('#userText').text(data);
+            });
+      });
+</script>

@@ -3,6 +3,7 @@ var router = express.Router();
 var middleText = ["init"];
 var userText = "";
 var init = false;
+var pendingCnt=[0,0];
 var global = require('../global');
 
 
@@ -77,7 +78,8 @@ router.get('/', function (req, res, next) {
     {
         patient: the_patient,
         middleText: global.getLog(),
-        userText: userText
+        userText: userText,
+        pendingCnt: pendingCnt
     });
 }
 });
@@ -98,9 +100,11 @@ router.get('/genData', function (req, res, next) {
     if (parseInt(req.query.device) == 1) {
         newData = "Blood Pressure: systolic " + (Math.round(90+30*Math.random()*100)/100) + " mmHg, diastolic " + (Math.round(60+30*Math.random()*100)/100) + " mmHg.";
         deviceNode1.generateDataFor(the_patientNode, newData);
+        pendingCnt[0]++;
     } else {
         newData = "Weight: " + (Math.round((50+5*Math.random())*100)/100) + " kg.";
         deviceNode2.generateDataFor(the_patientNode, newData);
+        pendingCnt[1]++;
     }
     log("Data generated.");
    // res.redirect("/prototype");
@@ -114,8 +118,10 @@ router.get('/submitDataLog', function (req, res, next) {
     log("Submitting from Device " + i);
     deviceNodeList[i - 1].submitDataLogFor(the_patientNode).then(function () {
 
+        pendingCnt[i - 1] = 0;
         log(deviceNodeList[i - 1].device.deviceName + " summited its data.");
        // res.redirect("/prototype");
+        res.send(deviceNodeList[i - 1].device.deviceName + " summited its data.");
     }
     );
 });
@@ -129,8 +135,8 @@ router.get('/userView', function (req, res, next) {
     the_patientNode.query(deviceNodeList[i - 1]).then(function (result) {
 
         userText = result;
-        // res.send(userText);
-        res.redirect('/prototype');
+        res.send(userText);
+        // res.redirect('/prototype');
     });
 });
 
