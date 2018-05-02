@@ -94,13 +94,17 @@ router.get('/init',function(req,res,next){
 router.get('/genData', function (req, res, next) {
 
     log("genData");
+    var newData = "";
     if (parseInt(req.query.device) == 1) {
-        deviceNode1.generateDataFor(the_patientNode, "Blood Pressure: systolic " + (90 + 30 * Math.random()) + " mmHg, diastolic " + (60 + 30 * Math.random()) + " mmHg.");
+        newData = "Blood Pressure: systolic " + (Math.round(90+30*Math.random()*100)/100) + " mmHg, diastolic " + (Math.round(60+30*Math.random()*100)/100) + " mmHg.";
+        deviceNode1.generateDataFor(the_patientNode, newData);
     } else {
-        deviceNode2.generateDataFor(the_patientNode, "Weight: " + (50 + 5 * Math.random()) + " kg.");
+        newData = "Weight: " + (Math.round((50+5*Math.random())*100)/100) + " kg.";
+        deviceNode2.generateDataFor(the_patientNode, newData);
     }
     log("Data generated.");
-    res.redirect("/prototype");
+   // res.redirect("/prototype");
+   res.send(newData);
 });
 
 router.get('/submitDataLog', function (req, res, next) {
@@ -111,13 +115,12 @@ router.get('/submitDataLog', function (req, res, next) {
     deviceNodeList[i - 1].submitDataLogFor(the_patientNode).then(function () {
 
         log(deviceNodeList[i - 1].device.deviceName + " summited its data.");
-        res.redirect("/prototype");
+       // res.redirect("/prototype");
     }
     );
 });
 
 router.get('/userView', function (req, res, next) {
-
 
     log(req.query);
     var i = parseInt(req.query.device);

@@ -1,6 +1,54 @@
 
 <h2>MedDevices</h2>
 
+<div class="w3-cell-row">
+  <div class="w3-cell">
+    <div class="w3-button w3-white w3-ripple" id="device-bloodPressure">
+      <img src="/images/device-bloodPressure.jpg" alt="device-bloodPressure" width="200" height="200">
+    </div><br>
+    <h5>Blood Pressure Meter</h5>
+    <button id="d1btn"> + </button>
+  </div>
+
+  <div class="w3-cell">
+    <div class="w3-button w3-white w3-ripple" id="device-weightScale">
+      <img src="/images/device-weightScale.jpg" alt="device-weightScale" width="200" height="200">
+    </div><br>
+    <h5>Weight Scale</h5>
+    <button id="d2btn"> + </button>
+  </div>
+
+</div>
+<br>
+<h5>Press Image to generate data.<br>Press "+" to submit.</h5>
+
+<script type="text/javascript">
+      $('#device-bloodPressure').click(function () {
+          $.get("/prototype/genData", { device:1 }, function(data, status){
+              alert("Data: " + data + "\nStatus: " + status);
+          });
+          location.reload();
+      });
+      $('#d1btn').click(function () {
+            $('#submitting').show();
+          $.get("/prototype/submitDataLog", { device:1 });
+          location.reload();
+      });
+      $('#device-weightScale').click(function () {
+          $.get("/prototype/genData", { device:2 }, function(data, status){
+              alert("Data: " + data + "\nStatus: " + status);
+          });
+          location.reload();
+      });
+      $('#d2btn').click(function () {
+            $('#submitting').show();
+          $.get("/prototype/submitDataLog", { device:2 });
+          location.reload();
+      });
+</script>
+
+
+<!-- 
 <form id="genData" method="get"  action="/prototype/genData">
 
   <select name="device">
@@ -20,7 +68,8 @@
     <button id="submitDataBtn" >Click to Submit Data</button>
     <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='submitting'/ >
 </form>
-
+-->
+    <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='submitting'/ >
 
 <!-- <script type="text/javascript">
   $("#loadingMyData").hide();
