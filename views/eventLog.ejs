@@ -4,11 +4,14 @@
         <h2>Event Log</h2>
     
 
-    <%for(var i=middleText.length-1;i>=0;i--){%>
+    <%for(var i=middleText.length-1;i>=middleText.length-5;i--){%>
         <tr>
             <td><%=middleText[i]%></td>
         </tr>
     <%}%>
+        <tr>
+            <td>...</td>
+        </tr>
 
 </table>
 </form>

@@ -3,6 +3,7 @@ var router = express.Router();
 var middleText = ["init"];
 var userText = "";
 var init = false;
+var pendingCnt=[0,0];
 var global = require('../global');
 
 
@@ -77,7 +78,8 @@ router.get('/', function (req, res, next) {
     {
         patient: the_patient,
         middleText: global.getLog(),
-        userText: userText
+        userText: userText,
+        pendingCnt: pendingCnt
     });
 }
 });
@@ -94,13 +96,19 @@ router.get('/init',function(req,res,next){
 router.get('/genData', function (req, res, next) {
 
     log("genData");
+    var newData = "";
     if (parseInt(req.query.device) == 1) {
-        deviceNode1.generateDataFor(the_patientNode, "Blood Pressure: systolic " + (90 + 30 * Math.random()) + " mmHg, diastolic " + (60 + 30 * Math.random()) + " mmHg.");
+        newData = "Blood Pressure: systolic " + (Math.round((90+30*Math.random())*100)/100) + " mmHg, diastolic " + (Math.round((60+30*Math.random())*100)/100) + " mmHg.";
+        deviceNode1.generateDataFor(the_patientNode, newData);
+        pendingCnt[0]++;
     } else {
-        deviceNode2.generateDataFor(the_patientNode, "Weight: " + (50 + 5 * Math.random()) + " kg.");
+        newData = "Weight: " + (Math.round((50+5*Math.random())*100)/100) + " kg.";
+        deviceNode2.generateDataFor(the_patientNode, newData);
+        pendingCnt[1]++;
     }
     log("Data generated.");
-    res.redirect("/prototype");
+   // res.redirect("/prototype");
+   res.send(newData);
 });
 
 router.get('/submitDataLog', function (req, res, next) {
@@ -110,24 +118,25 @@ router.get('/submitDataLog', function (req, res, next) {
     log("Submitting from Device " + i);
     deviceNodeList[i - 1].submitDataLogFor(the_patientNode).then(function () {
 
+        pendingCnt[i - 1] = 0;
         log(deviceNodeList[i - 1].device.deviceName + " summited its data.");
-        res.redirect("/prototype");
+       // res.redirect("/prototype");
+        res.send(deviceNodeList[i - 1].device.deviceName + " summited its data.");
     }
     );
 });
 
 router.get('/userView', function (req, res, next) {
 
-
-    log(req.query);
+    //log(req.query);
     var i = parseInt(req.query.device);
     log("Querying Device " + i);
 
     the_patientNode.query(deviceNodeList[i - 1]).then(function (result) {
 
         userText = result;
-        // res.send(userText);
-        res.redirect('/prototype');
+        res.send(userText);
+        // res.redirect('/prototype');
     });
 });
 
