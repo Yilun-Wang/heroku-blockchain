@@ -98,7 +98,7 @@ router.get('/genData', function (req, res, next) {
     log("genData");
     var newData = "";
     if (parseInt(req.query.device) == 1) {
-        newData = "Blood Pressure: systolic " + (Math.round(90+30*Math.random()*100)/100) + " mmHg, diastolic " + (Math.round(60+30*Math.random()*100)/100) + " mmHg.";
+        newData = "Blood Pressure: systolic " + (Math.round((90+30*Math.random())*100)/100) + " mmHg, diastolic " + (Math.round((60+30*Math.random())*100)/100) + " mmHg.";
         deviceNode1.generateDataFor(the_patientNode, newData);
         pendingCnt[0]++;
     } else {
@@ -128,7 +128,7 @@ router.get('/submitDataLog', function (req, res, next) {
 
 router.get('/userView', function (req, res, next) {
 
-    log(req.query);
+    //log(req.query);
     var i = parseInt(req.query.device);
     log("Querying Device " + i);
 
