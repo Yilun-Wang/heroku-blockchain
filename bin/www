@@ -13,8 +13,8 @@ var debug = require('debug')('demo:server');
 var http = require('http');
 var global=require('../global');
 
-global.hosturl="https://fathomless-depths-36951.herokuapp.com/";
-// global.hosturl="http://localhost:7545";
+// global.hosturl="https://fathomless-depths-36951.herokuapp.com/";
+global.hosturl="http://localhost:7545";
 /**
  * Create HTTP server.
  */
