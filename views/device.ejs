@@ -1,57 +1,79 @@
+<h2>
+  MedDevices</h2>
 
-<h2>MedDevices</h2>
-
+<br>
+<h3>Click "Submit" to submit pending data.</h3>
 <div class="w3-cell-row">
-  <div class="w3-cell">
+  <div class="w3-cell" style="float: left;">
+      <h5 id="mouseenter1" style="color:black; position: absolute; top:60%; left:3%">Click to View Data Log</h5>
     <div class="w3-button w3-white w3-ripple" id="device-bloodPressure">
       <img src="/images/device-bloodPressure.jpg" alt="device-bloodPressure" width="200" height="200">
-    </div><br>
+
+    </div>
+    <br>
     <h5>Blood Pressure Meter</h5>
-    <h5>Number of pending data: <%=pendingCnt[0]%></h5>
-    <button id="d1btn"> + </button>
+    <h5>Number of pending data:
+      <%=pendingCnt[0]%>
+    </h5>
+    <button id="d1btn"> Submit </button>
   </div>
 
-  <div class="w3-cell">
+  <div class="w3-cell" style="float: left;">
+      
     <div class="w3-button w3-white w3-ripple" id="device-weightScale">
+      <div class="deviceImg">
       <img src="/images/device-weightScale.jpg" alt="device-weightScale" width="200" height="200">
-    </div><br>
+        <h5 id="mouseenter2" style="position: absolute; top:60%; left:20%">Click to View Data Log</h5>
+      </div>
+    </div>
+    <br>
     <h5>Weight Scale</h5>
-    <h5>Number of pending data: <%=pendingCnt[1]%></h5>
-    <button id="d2btn"> + </button>
+    <h5>Number of pending data:
+      <%=pendingCnt[1]%>
+    </h5>
+    <button id="d2btn"> Submit </button>
   </div>
 
 </div>
-<br>
-<h5>Click Device Image to generate data.<br>Click "+" to submit.</h5>
+
 
 <script type="text/javascript">
-      $('#device-bloodPressure').click(function () {
-          $.get("/prototype/genData", { device:1 }, function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
-            location.reload();
-          });
-      });
-      $('#d1btn').click(function () {
-            $('#submitting').show();
-          $.get("/prototype/submitDataLog", { device:1 }, function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
-            location.reload();
-          });
-      });
-      $('#device-weightScale').click(function () {
-          $.get("/prototype/genData", { device:2 }, function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
-            location.reload();
-          });
-      });
-      $('#d2btn').click(function () {
-            $('#submitting').show();
-          $.get("/prototype/submitDataLog", { device:2 }, function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
-            location.reload();
-          });
-      });
+$('#mouseenter1').hide();
+$('#mouseenter2').hide();
+  $('#device-bloodPressure').mouseenter(function () {
+    $('#mouseenter1').show();
+  }).mouseleave(function () {
+    $('#mouseenter1').hide();
+  }).click(function () {
+    // $.get("/prototype/genData", { device: 1 }, function (data, status) {
+    //   alert("Data: " + data + "\nStatus: " + status);
+    //   location.reload();
+    // });
+  });
+  $('#d1btn').click(function () {
+    $('#submitting').show();
+    $.get("/prototype/submitDataLog", { device: 1 }, function (data, status) {
+      alert("Data: " + data + "\nStatus: " + status);
+      location.reload();
+    });
+  });
+  $('#device-weightScale').mouseenter(function () {
+    $('#mouseenter2').show();
+  }).mouseleave(function () {
+    $('#mouseenter2').hide();
+  }).click(function () {
+    // $.get("/prototype/genData", { device: 2 }, function (data, status) {
+    //   alert("Data: " + data + "\nStatus: " + status);
+    //   location.reload();
+    // });
+  });
+  $('#d2btn').click(function () {
+    $('#submitting').show();
+    $.get("/prototype/submitDataLog", { device: 2 }, function (data, status) {
+      alert("Data: " + data + "\nStatus: " + status);
+      location.reload();
+    });
+  });
 </script>
 
-<img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='submitting'/ >
-
+<img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='submitting' />

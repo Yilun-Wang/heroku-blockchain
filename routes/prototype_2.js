@@ -74,10 +74,12 @@ router.get('/', function (req, res, next) {
         res.render('init');
         }
     else{
+    var log=global.getLog();
+
     res.render("prototype_2",
     {
-        patient: the_patient,
-        middleText: global.getLog(),
+        // patient: the_patient,
+        middleText: log.slice(log.length-5,log.length),
         userText: userText,
         pendingCnt: pendingCnt
     });
@@ -88,6 +90,7 @@ router.get('/init',function(req,res,next){
     
     init = true;
     initObjects().then(function () {
+        flushLog();
         res.redirect('/prototype');
     });
 
