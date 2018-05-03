@@ -45,10 +45,11 @@ $('#mouseenter2').hide();
   }).mouseleave(function () {
     $('#mouseenter1').hide();
   }).click(function () {
-    // $.get("/prototype/genData", { device: 1 }, function (data, status) {
-    //   alert("Data: " + data + "\nStatus: " + status);
-    //   location.reload();
-    // });
+    $.get("/prototype/getDataLog", { device: 1 }, function (data, status) {
+      // alert("Data: " + data + "\nStatus: " + status);
+      // $('#midTextTitle').text('Data Log-BP')
+      location.reload();
+    });
   });
   $('#d1btn').click(function () {
     $('#submitting').show();
@@ -62,10 +63,12 @@ $('#mouseenter2').hide();
   }).mouseleave(function () {
     $('#mouseenter2').hide();
   }).click(function () {
-    // $.get("/prototype/genData", { device: 2 }, function (data, status) {
-    //   alert("Data: " + data + "\nStatus: " + status);
-    //   location.reload();
-    // });
+    $.get("/prototype/getDataLog", { device: 2 }, function (data, status) {
+      
+      // alert("Data: " + data + "\nStatus: " + status);
+      // $('#midTextTitle').text('Data Log-Weight')
+      // location.reload();
+    });
   });
   $('#d2btn').click(function () {
     $('#submitting').show();

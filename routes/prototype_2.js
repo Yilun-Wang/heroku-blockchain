@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var middleText = ["init"];
+var middleText = [];
+var midTextTitle='';
 var userText = "";
 var init = false;
-var pendingCnt=[0,0];
+var pendingCnt = [0, 0];
 var global = require('../global');
 
 
@@ -41,24 +42,24 @@ async function initObjects() {
     // console.log('Global RC',global.RC);
     await deployRC(global.hosturl);
 
-        deviceNode1 = new deviceNode('101', "Blood Pressure Meter", global.hosturl, global.RC);
-        deviceNode2 = new deviceNode('102', "Weight Scale", global.hosturl, global.RC);
+    deviceNode1 = new deviceNode('101', "Blood Pressure Meter", global.hosturl, global.RC);
+    deviceNode2 = new deviceNode('102', "Weight Scale", global.hosturl, global.RC);
 
-        device1 = deviceNode1.device;
-        device2 = deviceNode2.device;
-        deviceList = [device1, device2];
-        deviceNodeList = [deviceNode1, deviceNode2];
+    device1 = deviceNode1.device;
+    device2 = deviceNode2.device;
+    deviceList = [device1, device2];
+    deviceNodeList = [deviceNode1, deviceNode2];
 
-        the_patientNode = new patientNode('2000', 'Alice', global.hosturl, global.RC);
-        the_patient = the_patientNode.patient;
+    the_patientNode = new patientNode('2000', 'Alice', global.hosturl, global.RC);
+    the_patient = the_patientNode.patient;
 
-        deviceNode1.init().then(function () {
+    deviceNode1.init().then(function () {
         deviceNode2.init()
     });
-        await the_patientNode.init();
+    await the_patientNode.init();
 
-        log("Key Pair Generated.");
-        log("Initialization completed.");
+    log("Key Pair Generated.");
+    log("Initialization completed.");
     // log("Public Key: " + the_patient.publicKey);
 
 
@@ -72,22 +73,30 @@ function flushLog() {
 router.get('/', function (req, res, next) {
     if (!init) {
         res.render('init');
-        }
-    else{
-    var log=global.getLog();
+    }
+    else {
+        /*If the middle text is not initialized, set it to default value. */
+        if(middleText.length==0)
+            middleText=global.getLog().slice(log.length - 5, log.length);
+        if(midTextTitle=="")
+            midTextTitle="Event Log";
 
-    res.render("prototype_2",
-    {
-        // patient: the_patient,
-        middleText: log.slice(log.length-5,log.length),
-        userText: userText,
-        pendingCnt: pendingCnt
-    });
-}
+        res.render("prototype_2",
+            {
+                // patient: the_patient,
+                midTextTitle:midTextTitle,
+                middleText: middleText,
+                userText: userText,
+                pendingCnt: pendingCnt
+            });
+
+        middleText=[];
+        midTextTitle="";
+    }   
 });
 
-router.get('/init',function(req,res,next){
-    
+router.get('/init', function (req, res, next) {
+
     init = true;
     initObjects().then(function () {
         flushLog();
@@ -101,17 +110,35 @@ router.get('/genData', function (req, res, next) {
     log("genData");
     var newData = "";
     if (parseInt(req.query.device) == 1) {
-        newData = "Blood Pressure: systolic " + (Math.round((90+30*Math.random())*100)/100) + " mmHg, diastolic " + (Math.round((60+30*Math.random())*100)/100) + " mmHg.";
+        newData = "Blood Pressure: systolic " + (Math.round((90 + 30 * Math.random()) * 100) / 100) + " mmHg, diastolic " + (Math.round((60 + 30 * Math.random()) * 100) / 100) + " mmHg.";
         deviceNode1.generateDataFor(the_patientNode, newData);
         pendingCnt[0]++;
     } else {
-        newData = "Weight: " + (Math.round((50+5*Math.random())*100)/100) + " kg.";
+        newData = "Weight: " + (Math.round((50 + 5 * Math.random()) * 100) / 100) + " kg.";
         deviceNode2.generateDataFor(the_patientNode, newData);
         pendingCnt[1]++;
     }
     log("Data generated.");
-   // res.redirect("/prototype");
-   res.send(newData);
+    // res.redirect("/prototype");
+    res.send(newData);
+});
+
+
+router.get('/getDataLog', function (req, res, next) {
+
+    var newData = "";
+    var deviceName='';
+    if (parseInt(req.query.device) == 1) {
+        newData = device1.dataLog;
+        deviceName="Blood Pressure";
+    } else {
+        newData = device2.dataLog;
+        deviceName="Weight";
+    }
+
+    middleText=newData.slice(log.length - 5, log.length);
+    midTextTitle:"Data Log-"+deviceName;
+    res.redirect('/prototype');
 });
 
 router.get('/submitDataLog', function (req, res, next) {
@@ -123,7 +150,7 @@ router.get('/submitDataLog', function (req, res, next) {
 
         pendingCnt[i - 1] = 0;
         log(deviceNodeList[i - 1].device.deviceName + " summited its data.");
-       // res.redirect("/prototype");
+        // res.redirect("/prototype");
         res.send(deviceNodeList[i - 1].device.deviceName + " summited its data.");
     }
     );
