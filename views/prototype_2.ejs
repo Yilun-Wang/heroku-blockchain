@@ -5,7 +5,6 @@
     <title>Prototype2</title>
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
     <link rel='stylesheet' href='/assets/css/main.css' />
 </head>
 
@@ -26,6 +25,7 @@
             max-width: 300px;
             text-align: center;
             font-size: 15px;
+            overflow: auto;
         }
 
         #userView {
@@ -40,16 +40,7 @@
             height: 600px;
         }
 
-        /* .hoverText{
-
-            /* transition effect. not necessary */
-            transition: opacity .2s, visibility .2s;
-        }
-
-        .deviceImg:hover .hoverText {
-            visibility: visible;
-            opacity: 1;
-        } */
+        
     </style>
 
     <div class="w3-row">
@@ -62,15 +53,9 @@
         </div>
 
         <div class="w3-col m4 l4 w3-panel" id='userView'>
-            <!-- <div class="w3-display-container" style="position: relative; padding-left:25%; padding-top:30% " > -->
-            <!-- <img src="/images/phone-frame.png"> -->
 
             <%- include user.ejs %>
-                <!-- </div> -->
-                <div class="w3-display-middle">
-                    <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='loadingMyData' />
-                </div>
-                <!-- </div> -->
+                
         </div>
 
     </div>
@@ -79,8 +64,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            $('#submitting').hide();
-            $("#loadingMyData").hide();
         });
     </script>
 

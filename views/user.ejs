@@ -5,12 +5,14 @@
 </div>
 <div class="w3-bar w3-cell" style="position: relative; padding-left:15%; padding-top:10%">
   <button class="w3-bar-item w3-indigo" id="viewDataBtn1">View BP</button>
+  <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='querying_1' />
   <button class="w3-bar-item w3-indigo" id="viewDataBtn2">View Weight</button>
+  <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='querying_2' />
 </div>
 
 <div class="w3-display-middle w3-cell-colomn" style="float: right;max-width: 80%; padding-right: 10%;">
 
-  <p  readonly='readonly' id='userText' style="overflow: auto;border:solid forestgreen;">
+  <p readonly='readonly' id='userText' style="overflow: auto;border:solid forestgreen;">
     <%=userText%>
   </p>
   <button id='decryptBtn'>Decrypt</button>
@@ -20,14 +22,16 @@
 
 
 <script type="text/javascript">
+  $('#querying_1').hide();
+  $('#querying_2').hide();
   $('#viewDataBtn1').click(function () {
-    $('#loadingMyData').show();
+    $('#querying_1').show();
     $.get("/prototype/userView", { device: 1 }, function (data, status) {
       location.reload();
     });
   });
   $('#viewDataBtn2').click(function () {
-    $('#loadingMyData').show();
+    $('#querying_2').show();
     $.get("/prototype/userView", { device: 2 }, function (data, status) {
       location.reload();
     });

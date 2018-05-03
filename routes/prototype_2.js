@@ -77,7 +77,10 @@ router.get('/', function (req, res, next) {
     else {
         /*If the middle text is not initialized, set it to default value. */
         if(middleText.length==0)
-            middleText=global.getLog().slice(log.length - 5, log.length);
+            {
+                var log=global.getLog();
+                middleText=log.slice(log.length - 5, log.length);
+            }
         if(midTextTitle=="")
             midTextTitle="Event Log";
 
@@ -136,9 +139,9 @@ router.get('/getDataLog', function (req, res, next) {
         deviceName="Weight";
     }
 
-    middleText=newData.slice(log.length - 5, log.length);
-    midTextTitle:"Data Log-"+deviceName;
-    res.redirect('/prototype');
+    middleText=newData.slice(newData.length - 5, newData.length);
+    midTextTitle="Data Log:"+deviceName;
+    res.send('Success');
 });
 
 router.get('/submitDataLog', function (req, res, next) {
