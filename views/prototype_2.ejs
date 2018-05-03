@@ -5,7 +5,6 @@
     <title>Prototype2</title>
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
     <link rel='stylesheet' href='/assets/css/main.css' />
 </head>
 
@@ -16,50 +15,57 @@
 
     <style>
         #deviceView {
+            float: left;
             text-align: center;
         }
 
         #eventLog {
-            padding-left: 30px;
-            padding-right: 30px;
+            float: left;
+            padding-left: 10px;
+            max-width: 300px;
+            text-align: center;
+            font-size: 15px;
+            overflow: auto;
         }
 
         #userView {
+            float: right;
             text-align: center;
+            padding-right: 50px;
+            overflow: auto;
+            background-image: url(/images/phone-frame.png);
+            /* background-position: center; */
+            background-size: 100% 100%;
+            width: 400px;
+            height: 600px;
         }
+
+        
     </style>
 
-<div class="w3-row">
-    <div class="w3-col m5 l5 w3-panel" id='deviceView'>
-        <%- include device.ejs %>
-    </div>
-
-    <div class="w3-col m3 l3 w3-panel" id='eventLog'>
-        <%- include eventLog.ejs %>
-    </div>
-
-    <div class="w3-col m4 l4 w3-panel" id='userView'>
-        <div class="w3-display-container">
-            <img src="/images/phone-frame.png">
-            <div class="w3-display-middle w3-cell-colomn" style="width:236px;">
-                <%- include user.ejs %>
-            </div>
-            <div class="w3-display-middle">
-                <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='loadingMyData'/ >
-            </div>
+    <div class="w3-row">
+        <div class="w3-col m5 l5 w3-panel" id='deviceView'>
+            <%- include device.ejs %>
         </div>
+
+        <div class="w3-col m3 l3 w3-panel" id='eventLog'>
+            <%- include eventLog.ejs %>
+        </div>
+
+        <div class="w3-col m4 l4 w3-panel" id='userView'>
+
+            <%- include user.ejs %>
+                
+        </div>
+
     </div>
 
-</div>
 
+    <script type="text/javascript">
+        $(document).ready(function () {
 
-<script type="text/javascript">
-    $(document).ready(function(){
-
-        $('#submitting').hide();
-        $("#loadingMyData").hide();
-    });
-</script>
+        });
+    </script>
 
 </body>
 
