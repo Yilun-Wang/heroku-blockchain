@@ -1,0 +1,94 @@
+<div class="w3-display-middle w3-cell-colomn" style="padding-top: 20%;">
+    <h3 style="padding-left:12%">Emergency</h3>
+
+
+    <div id="newEmergency" style="max-width: 80%; float: inherit; padding-left: 20%;">
+        Blood Type:
+        <select id="BloodType">
+            <option value="O">O</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="AB">AB</option>
+        </select>
+
+        Allergic History:
+        <input type="text" value="Peanuts" id="Allergic"> Medication:
+        <input type="text" value="None" id="Medication">
+
+
+        <br>
+        <br>
+        <button id='return' style="background-color: black;">
+            <font color="gold">Submit</font>
+        </button>
+        <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='Updating' />
+    </div>
+
+
+    <div>
+
+        <button class="w3-bar-item w3-indigo" style="background-color: black" id="viewDataBtn3">View Data</button>
+        <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='querying_3' />
+
+        <button class="w3-bar-item w3-indigo" style="background-color: black" id="Update">Update</button>
+
+
+        <button class="w3-bar-item w3-indigo" id="MainPage">Main Page</button>
+        
+        <div style="max-width:90%;float: left; padding-left:25%;" id="emDataDisplay">
+            <textarea  id="emData"></textarea>
+
+            <button class="w3-bar-item w3-indigo" style="background-color: black" id="emDecrypt">Decrypt</button>
+        </div>
+    
+    </div>
+
+
+</div>
+
+
+
+<script type="text/javascript">
+
+    $("#viewDataBtn3").click(function () {
+        $("#querying_3").show();
+        
+        $.get('/prototype/viewEmergency', function (data, status) {
+            console.log(data);
+            $("#emData").text(data);
+            $("#emDataDisplay").show();
+            
+            $("#querying_3").hide();
+            
+
+        });
+
+    });
+    $("#emDecrypt").click(function () {
+        var cipher = $("#emData").text();
+        $.get('/prototype/emDecrypt', { emData: cipher }, function (data, status) {
+            $("#emData").text(data);
+        });
+    });
+    $("#Update").click(function () {
+        $("#newEmergency").show();
+        $("#Update").hide();
+        $("#viewDataBtn3").hide();
+        $("#emDataDisplay").hide();
+
+    });
+    $("#MainPage").click(function () {
+        // $('#normalView').show();
+        // $('#emergencyView').hide();
+        location.reload();
+    });
+    $('#return').click(function () {
+        $('#Updating').show();
+        $.get('/prototype/submitEmergency', { BloodType: $("#BloodType").val(), Allergic: $("#Allergic").val(), Medication: $("#Medication").val() }, function (data, status) {
+            $('#Updating').hide();
+
+            console.log(data);
+        });
+
+    });
+</script>

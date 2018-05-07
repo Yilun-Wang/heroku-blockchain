@@ -6,10 +6,10 @@ function medicalDevice(id, name) {
    
     this.generateData = function(newData,publicKey=null) {
     var now=new Date();       
-        var data="\nTime:"+now+"\nContent:"+newData;
+        var data="\nTime:"+now+"\nContent: "+newData;
         
         if(publicKey==null)
-            this.dataLog.push(data);
+            this.dataLog.push(newData);
         else
             this.dataLog.push(this.encrypt(publicKey,data+""));
         
@@ -68,11 +68,14 @@ function patient(id, name) {
      
     this.encryptEm = function(message){
         var AES=require("crypto-js").AES;
-
-        return AES.encrypt(""+message,""+this.emKey).toString();
+        console.log("encrypEm message:"+message.toString());
+        var cipher= AES.encrypt(""+message.toString(),""+this.emKey).toString();
+        console.log("encrypEm cipher:"+cipher);
+        return cipher;
     }
 
     this.decryptEm = function(message){
+        console.log("decrypEm message:"+message);
          var CryptoJS=require("crypto-js");
          var bytes=CryptoJS.AES.decrypt(message.toString(),""+this.emKey);
         if(bytes=="")
@@ -91,7 +94,7 @@ function patient(id, name) {
 
         var cryptico=require('cryptico');
 
-        var rsaKeyObj=cryptico.generateRSAKey(nounce+"",this.getKeyLength());
+        var rsaKeyObj=cryptico.generateRSAKey(this.patientID+""+nounce,this.getKeyLength());
         this.publicKey=cryptico.publicKeyString(rsaKeyObj);
         this.privateKey=rsaKeyObj;
 

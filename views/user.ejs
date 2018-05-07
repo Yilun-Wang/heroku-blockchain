@@ -2,12 +2,14 @@
   <button class="w3-bar-item w3-indigo" style="background-color: red;" id="measureBtn1">Measure BP</button>
 
   <button class="w3-bar-item w3-indigo" style="background-color: blue;" id="measureBtn2">Measure Weight</button>
+
 </div>
 <div class="w3-bar w3-cell" style="position: relative; padding-left:15%; padding-top:10%">
   <button class="w3-bar-item w3-indigo" id="viewDataBtn1">View BP</button>
   <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='querying_1' />
   <button class="w3-bar-item w3-indigo" id="viewDataBtn2">View Weight</button>
   <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='querying_2' />
+
 </div>
 
 <div class="w3-display-middle w3-cell-colomn" style="float: right;max-width: 80%; padding-right: 10%;">
@@ -17,9 +19,28 @@
   </p>
   <button id='decryptBtn'>Decrypt</button>
 
+  <div class="w3-display-middle w3-cell-colomn" style="float: right; padding-right: 20%; padding-top: 10%;">
+    <button id='enterEmergency' style="background-color: black">
+      <font color="gold">Emergency</font>
+    </button>
+  </div>
+
 </div>
 
+<script type="text/javascript">
+  $('#enterEmergency').click(function () {
+    $('#normalView').hide();
+    $("#newEmergency").hide();
+    $("#querying_3").hide();
+    $('#Updating').hide();
+    $("#emDataDisplay").hide();
 
+    $("#Update").show();
+    $("#viewDataBtn3").show();
+    $('#emergencyView').show();
+
+  });
+</script>
 
 <script type="text/javascript">
   $('#querying_1').hide();
