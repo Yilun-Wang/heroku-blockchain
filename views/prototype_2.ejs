@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <link rel='stylesheet' href='/assets/css/main.css' />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
 </head>
 
 <body>
@@ -15,29 +16,29 @@
 
     <style>
         #deviceView {
-            float: left;
+            /* float: left; */
             text-align: center;
         }
 
         #eventLog {
-            float: left;
+            /* float: left;
             padding-left: 10px;
-            max-width: 300px;
+            max-width: 300px; */
             text-align: center;
             font-size: 15px;
             overflow: auto;
         }
 
         #userView {
-            float: right;
+            /* float: right; */
             text-align: center;
-            padding-right: 50px;
+            /* padding-right: 50px; */
             overflow: auto;
-            background-image: url(/images/phone-frame.png);
-            /* background-position: center; */
+            /* background-image: url(/images/phone-frame.png);
+            background-position: center;
             background-size: 100% 100%;
             width: 400px;
-            height: 600px;
+            height: 600px; */
         }
     </style>
 
@@ -52,14 +53,17 @@
 
         <div class="w3-col m4 l4 w3-panel" id='userView'>
 
-            <div id="normalView">
-                <%- include user.ejs %>
+            <div class="w3-cell w3-display-container">
+                <img src="/images/phone-frame.png">
+                <div class="w3-display-middle w3-cell-colomn" style="width:236px;" id="normalView">
+                    <%- include user.ejs %>
+                </div>
+
+                <div class="w3-display-middle w3-cell-colomn" style="width:236px;" id="emergencyView">
+                    <%- include emergency.ejs %>
+                </div>
             </div>
 
-
-            <div id="emergencyView">
-                <%- include emergency.ejs %>
-            </div>
         </div>
 
     </div>
