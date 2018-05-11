@@ -211,6 +211,9 @@ router.get("/viewEmergency", function (req, res, next) {
 
 router.get("/emDecrypt", function (req, res, next) {
     var plaintext = the_patientNode.patient.decryptEm(req.query.emData);
+    if (plaintext == "Decryption Fails") {
+        plaintext = "";
+    }
     res.send(plaintext);
 });
 

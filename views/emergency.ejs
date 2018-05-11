@@ -27,16 +27,16 @@
 
     <div class="w3-col" style="width:236px;">
 
-        <div class="w3-bar w3-cell" >
-            <button class="w3-bar-item w3-black" style="background-color: black" id="viewDataBtn3">View Data</button>
-            <button class="w3-bar-item w3-black" style="background-color: black" id="Update">Update</button>
+        <div class="w3-row-padding w3-cell" style="width:236px;">
+            <button class="w3-half w3-black" style="background-color: black" id="viewDataBtn3">View Data</button>
+            <button class="w3-half w3-black" style="background-color: black" id="Update">Update</button>
         </div>
         <img src="http://www.lanrentuku.com/savepic/img/allimg/1212/5-121204193R0.gif" id='querying_3' />
 
         <button class="w3-cell" id="MainPage">Main Page</button>
         
         <div id="emDataDisplay">
-            <textarea style="min-height: 260px" id="emData"></textarea>
+            <textarea style="min-height: 200px" id="emData"></textarea>
 
             <button class="w3-cell w3-indigo" style="background-color: black" id="emDecrypt">Decrypt</button>
         </div>
@@ -84,8 +84,8 @@
         $('#Updating').show();
         $.get('/prototype/submitEmergency', { BloodType: $("#BloodType").val(), Allergic: $("#Allergic").val(), Medication: $("#Medication").val() }, function (data, status) {
             $('#Updating').hide();
-
-            console.log(data);
+            alert("Emergency Data Created.");
+            location.reload();
         });
 
     });
